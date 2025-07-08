@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>挑戦と未来 - 前川 雄世</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">    <style>
+        /* ホーム画面と同じデザインテイスト */
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            overflow-x: hidden;
+            padding-top: 80px; /* ナビバーの高さ分 */
+        }
+
+        .experience-page {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: var(--background-color);
+        }
+
+        .page-title {
+            color: var(--primary-color);
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 3rem;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--secondary-color);
+            border-radius: 2px;
+        }
+
+        .values-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .value-tag {
+            background: var(--secondary-color);
+            color: white;
+            padding: 0.7rem 1.2rem;
+            border-radius: 25px;
+            font-weight: 500;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .value-tag:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .highlight-box {
+            background: var(--section-bg);
+            padding: 2.5rem;
+            border-radius: 15px;
+            margin: 3rem 0;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .highlight-text {
+            background: var(--accent-color);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        /* アコーディオンスタイル - ホーム画面と統一 */
+        .accordion-item {
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .accordion-item:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .accordion-header {
+            background: var(--section-bg);
+            border: none;
+            width: 100%;
+            text-align: left;
+            padding: 2rem;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .accordion-header:hover {
+            background-color: #ecf0f1;
+        }
+
+        .accordion-icon {
+            transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+        }
+
+        .accordion-header.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.25, 0.1, 0.25, 1), padding 0.5s ease;
+            padding: 0 2rem;
+            background: white;
+        }
+
+        .accordion-content-inner {
+            padding: 2rem 0;
+            border-top: 1px solid var(--border-color);
+            line-height: 1.8;
+        }
+
+        .accordion-content-inner p {
+            margin-bottom: 1.5rem;
+            color: var(--text-color);
+        }
+
+        .achievement-box {
+            background: var(--section-bg);
+            border-left: 4px solid var(--secondary-color);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .achievement-box strong {
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .goals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .goal-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+        }
+
+        .goal-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .goal-card h4 {
+            margin-top: 0;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .goal-card i {
+            font-size: 2rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .conclusion-box {
+            background: var(--section-bg);
+            padding: 3rem;
+            border-radius: 15px;
+            margin: 3rem 0;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .conclusion-box h2 {
+            margin-top: 0;
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: var(--secondary-color);
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 50px;
+            margin-top: 2rem;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .back-btn:hover {
+            background: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        @media (max-width: 768px) {
+            .experience-page {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+
+            .page-title {
+                font-size: 2.5rem;
+            }
+
+            .accordion-header {
+                font-size: 1.2rem;
+                padding: 1.5rem;
+            }
+
+            .accordion-content {
+                padding: 0 1.5rem;
+            }
+
+            .accordion-content-inner {
+                padding: 1.5rem 0;
+            }
+
+            .goals-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .values-list {
+                gap: 0.8rem;
+            }
+
+            .value-tag {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+    </style>
+</head>
+
+<body>
+    <!-- ナビゲーションバー -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2>Maedora</h2>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html#home" class="nav-link">ホーム</a>
+                </li>
+                <li class="nav-item">
+                    <a href="index.html#about" class="nav-link">私について</a>
+                </li>
+                <li class="nav-item">
+                    <a href="index.html#skills" class="nav-link">スキル</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link active">経験</a>
+                </li>
+                <li class="nav-item">
+                    <a href="index.html#contact" class="nav-link">お問い合わせ</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="experience-page">
+        <h1 class="page-title">挑戦と未来</h1>
+
+        <div class="highlight-box">
+            <p style="text-align: center; font-size: 1.2rem; margin-bottom: 1rem;">
+                <i class="fas fa-heart"></i> 私が大切にしている <strong>5つの価値観</strong> <i class="fas fa-heart"></i>
+            </p>
+            <div class="values-list">
+                <span class="value-tag"><i class="fas fa-rocket"></i> 挑戦心</span>
+                <span class="value-tag"><i class="fas fa-search"></i> 好奇心</span>
+                <span class="value-tag"><i class="fas fa-dumbbell"></i> 粘り強さ</span>
+                <span class="value-tag"><i class="fas fa-arrows-alt"></i> 柔軟性</span>
+                <span class="value-tag"><i class="fas fa-users"></i> 協調性</span>
+            </div>
+            <p style="text-align: center; margin-top: 1.5rem; font-size: 1.1rem;">
+                これらを意識するようになった背景には、私が経験してきた<span class="highlight-text">3つの大きな挑戦</span>があります。<br>
+                ここでは、それらの経験を通じて得た学びと、現在そして未来に向けた自分の姿勢についてお話しします。
+            </p>
+        </div>
+
+        <div class="accordion">
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    <span>第一の挑戦：大学受験での挫折と再起</span>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </button>
+                <div class="accordion-content">
+                    <div class="accordion-content-inner">
+                        <p>
+                            私が初めて本格的な挑戦に直面したのは、高校時代でした。中学生の頃、塾で出会った恩師の影響で勉強が好きになり、努力の末に進学校へ進学。高校1年の冬には、<span
+                                class="highlight-text">「好きなゲームを自分で作ってみたい」</span>という好奇心から情報系の分野に進むことを決意し、国公立大学を目指して本格的に受験勉強を始めました。
+                        </p>
+                        <p>
+                            しかし、高校3年の夏、「受験の天王山」と呼ばれる時期に、私は限界を迎えました。スケジュールによる心身の負担や、進路選択への迷いが重なり、突然涙があふれるような状態に。次第に、勉強が<span
+                                class="highlight-text">「楽しい」から「しんどい」</span>ものに変わっていきました。その結果、大学受験では全て不合格となり、数か月にわたって無気力な日々を送ることになります。
+                        </p>
+                        <p>
+                            それでも、<span
+                                class="highlight-text">「どうしても諦めたくない」</span>という思いと、一番迷惑をかけてしまった母への申し訳なさから、再び立ち上がる決意をしました。ここからが、私の第二の挑戦の始まりです。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    <span>第二の挑戦：編入試験と1年間の挑戦</span>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </button>
+                <div class="accordion-content">
+                    <div class="accordion-content-inner">
+                        <p>
+                            2023年5月、私は大阪公立大学の情報工学科への編入試験を目指し、新たな挑戦を始めました。この挑戦の中で重視したのは、<span
+                                class="highlight-text">「楽しく勉強をする」</span>という姿勢です。
+                        </p>
+                        <div class="achievement-box">
+                            <strong><i class="fas fa-graduation-cap"></i> ダブルスクールでの学習</strong><br>
+                            北海道情報大学＋大阪情報専門学校という形で、大学の単位を取得しつつ、専門学校で専門知識を深めました。
+                        </div>
+                        <div class="achievement-box">
+                            <strong><i class="fas fa-trophy"></i> 資格・試験への挑戦</strong><br>
+                            • 基本情報技術者試験 <span style="color: #27ae60; font-weight: bold;">合格</span><br>
+                            • 応用情報技術者試験 <span style="color: #27ae60; font-weight: bold;">合格</span><br>
+                            • TOEIC 5回受験 → <span class="highlight-text">670点（L330/R340）</span>達成
+                        </div>
+                        <div class="achievement-box">
+                            <strong><i class="fas fa-calculator"></i> 数学の独学</strong><br>
+                            大学2年分の数学を1年で習得：<br>
+                            <span style="color: #3498db; font-weight: bold;">線形代数・微分方程式・複素解析・フーリエ変換・ラプラス変換</span>
+                        </div>
+                        <p>
+                            結果として編入試験は不合格でしたが、<span
+                                class="highlight-text">「悔しい」という感情よりも、「やり切った」という達成感</span>が強く残りました。私はこの経験を通じて、目標を持って取り組む過程そのものに大きな価値があると実感しました。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    <span>第三の挑戦：現在とこれからの目標</span>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </button>
+                <div class="accordion-content">
+                    <div class="accordion-content-inner">
+                        <p>
+                            私は今、将来の目標として<span
+                                class="highlight-text">「尊敬されるエンジニアになること」</span>を掲げています。この目標は明確な達成基準があるわけではなく、評価は他者に委ねられるものです。だからこそ、日々の努力と姿勢が重要だと考えています。
+                        </p>
+                        <h3 style="color: #2c3e50; margin: 2rem 0 1.5rem 0; text-align: center; font-size: 1.3rem;">
+                            <i class="fas fa-bullseye"></i> 現在取り組んでいる4つのこと
+                        </h3>
+                        <div class="goals-grid">
+                            <div class="goal-card">
+                                <h4><i class="fas fa-trophy"></i> 競技プログラミング</h4>
+                                <p>AtCoderで水色コーダーを目指し、difficulty 400以上の問題に挑戦中</p>
+                            </div>
+                            <div class="goal-card">
+                                <h4><i class="fas fa-certificate"></i> 高度資格</h4>
+                                <p>情報処理安全確保支援士などの高度資格に挑戦</p>
+                            </div>
+                            <div class="goal-card">
+                                <h4><i class="fas fa-globe"></i> 英語力向上</h4>
+                                <p>TOEIC800点を目標に、技術書やエラーメッセージの読解力向上</p>
+                            </div>
+                            <div class="goal-card">
+                                <h4><i class="fas fa-code"></i> 開発スキル</h4>
+                                <p>家計簿アプリなどの作品制作、Git・DB運用スキルの習得</p>
+                            </div>
+                        </div>
+                        <p>
+                            また、これらに加えて<span
+                                class="highlight-text">「自信をつけること」</span>も意識しています。グループ活動でのリーダー経験や、人前で話す機会を増やすことで、単なる知識だけではないリーダーシップスキルの習得を目指しています。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="conclusion-box">
+            <h2>終わりに</h2>
+            <p>
+                挑戦を通じて得た学びを活かし、未来に向けて成長を続けます。
+            </p>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="index.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> トップページへ戻る
+            </a>
+        </div>    </div>
+
+    <!-- scripts.jsを読み込み -->
+    <script src="script.js"></script>
+    <script>
+        // アコーディオン機能
+        const accordionHeaders = document.querySelectorAll('.accordion-header');
+
+        accordionHeaders.forEach(header => {
+            header.addEventListener('click', () => {
+                const accordionContent = header.nextElementSibling;
+                const isActive = header.classList.contains('active');
+
+                // 他のアコーディオンを閉じる
+                accordionHeaders.forEach(otherHeader => {
+                    if (otherHeader !== header) {
+                        otherHeader.classList.remove('active');
+                        otherHeader.nextElementSibling.style.maxHeight = '0px';
+                    }
+                });
+
+                // 現在のアコーディオンを切り替え
+                header.classList.toggle('active');
+
+                if (!isActive) {
+                    accordionContent.style.maxHeight = accordionContent.scrollHeight + 'px';
+                } else {
+                    accordionContent.style.maxHeight = '0px';
+                }
+            });
+        });
+
+        // ページ読み込み時のアニメーション
+        document.addEventListener('DOMContentLoaded', () => {
+            const elements = document.querySelectorAll('.value-tag, .goal-card, .accordion-item');
+            elements.forEach((element, index) => {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    element.style.transition = 'all 0.6s ease';
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+
+</html>

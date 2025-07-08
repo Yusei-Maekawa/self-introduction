@@ -1,5 +1,5 @@
 // ページ読み込み時の初期化
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     initializeSplashScreen();
     // 基本機能は即座に初期化
     initializeNavigation();
@@ -11,45 +11,45 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeSplashScreen() {
     const splashScreen = document.getElementById('splash-screen');
     const mainContent = document.getElementById('main-content');
-    
+
     // スプラッシュスクリーンの表示時間（3秒後に遷移開始）
     setTimeout(() => {
         // グローエフェクトを追加
         const splashText = document.querySelector('.splash-text');
         const splashDash = document.querySelector('.splash-dash');
-        
+
         if (splashText && splashDash) {
             splashText.style.animation += ', pulseGlow 1s ease-in-out';
             splashDash.style.animation += ', pulseGlow 1s ease-in-out 0.2s';
         }
-        
+
         // 1秒後にフェードアウト開始
         setTimeout(() => {
             splashScreen.classList.add('fade-out');
-            
+
             // フェードアウト完了後にメインコンテンツ表示
             setTimeout(() => {
                 mainContent.classList.add('show');
                 splashScreen.style.display = 'none';
-                
+
                 // メインコンテンツが表示された後に重い処理を実行
                 initializeMainContentFeatures();
             }, 1000);
         }, 1000);
     }, 2500);
-    
+
     // クリックでスキップ機能
     splashScreen.addEventListener('click', () => {
         skipSplashScreen();
     });
-    
+
     // Enterキーでスキップ機能
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !splashScreen.classList.contains('fade-out')) {
             skipSplashScreen();
         }
     });
-    
+
     function skipSplashScreen() {
         splashScreen.classList.add('fade-out');
         setTimeout(() => {
@@ -105,10 +105,10 @@ function initializeSmoothScrolling() {
     const heroButtons = document.querySelectorAll('.hero-buttons .btn');
 
     [...navLinks, ...heroButtons].forEach(link => {
-        link.addEventListener('click', function(e) {
+        link.addEventListener('click', function (e) {
             e.preventDefault();
             const targetId = this.getAttribute('href');
-            
+
             if (targetId.startsWith('#')) {
                 const targetElement = document.querySelector(targetId);
                 if (targetElement) {
@@ -191,7 +191,7 @@ function initializeTypingEffect() {
     if (heroSubtitle) {
         const originalText = heroSubtitle.textContent;
         heroSubtitle.textContent = '';
-        
+
         setTimeout(() => {
             typeText(heroSubtitle, originalText, 100);
         }, 1000);
@@ -214,33 +214,33 @@ function typeText(element, text, speed) {
 function initializeContactForm() {
     const form = document.querySelector('.contact-form form');
     if (form) {
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', function (e) {
             e.preventDefault();
-            
+
             // フォームデータの取得
             const formData = new FormData(form);
             const name = formData.get('name');
             const email = formData.get('email');
             const message = formData.get('message');
-            
+
             // バリデーション
             if (!name || !email || !message) {
                 showNotification('すべての項目を入力してください。', 'error');
                 return;
             }
-            
+
             if (!isValidEmail(email)) {
                 showNotification('有効なメールアドレスを入力してください。', 'error');
                 return;
             }
-            
+
             // 送信処理のシミュレーション
             const submitBtn = form.querySelector('button[type="submit"]');
             const originalText = submitBtn.textContent;
-            
+
             submitBtn.textContent = '送信中...';
             submitBtn.disabled = true;
-            
+
             setTimeout(() => {
                 showNotification('メッセージを送信しました。ありがとうございます！', 'success');
                 form.reset();
@@ -264,12 +264,12 @@ function showNotification(message, type = 'info') {
     if (existingNotification) {
         existingNotification.remove();
     }
-    
+
     // 通知要素の作成
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
     notification.textContent = message;
-    
+
     // スタイルの設定
     Object.assign(notification.style, {
         position: 'fixed',
@@ -284,7 +284,7 @@ function showNotification(message, type = 'info') {
         transition: 'transform 0.3s ease',
         maxWidth: '400px'
     });
-    
+
     // タイプ別の色設定
     const colors = {
         success: '#27ae60',
@@ -292,15 +292,15 @@ function showNotification(message, type = 'info') {
         info: '#3498db'
     };
     notification.style.backgroundColor = colors[type] || colors.info;
-    
+
     // DOMに追加
     document.body.appendChild(notification);
-    
+
     // アニメーション
     setTimeout(() => {
         notification.style.transform = 'translateX(0)';
     }, 10);
-    
+
     // 自動削除
     setTimeout(() => {
         notification.style.transform = 'translateX(100%)';
@@ -317,7 +317,7 @@ function addScrollToTopButton() {
     const button = document.createElement('button');
     button.innerHTML = '<i class="fas fa-arrow-up"></i>';
     button.className = 'scroll-top-btn';
-    
+
     Object.assign(button.style, {
         position: 'fixed',
         bottom: '30px',
@@ -336,14 +336,14 @@ function addScrollToTopButton() {
         zIndex: '1000',
         boxShadow: '0 2px 10px rgba(0,0,0,0.3)'
     });
-    
+
     button.addEventListener('click', () => {
         window.scrollTo({
             top: 0,
             behavior: 'smooth'
         });
     });
-    
+
     // スクロール時の表示/非表示
     window.addEventListener('scroll', () => {
         if (window.scrollY > 300) {
@@ -354,7 +354,7 @@ function addScrollToTopButton() {
             button.style.visibility = 'hidden';
         }
     });
-    
+
     document.body.appendChild(button);
 }
 
@@ -381,7 +381,7 @@ function initializeThemeToggle() {
     const themeToggle = document.createElement('button');
     themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
     themeToggle.className = 'theme-toggle';
-    
+
     Object.assign(themeToggle.style, {
         position: 'fixed',
         top: '50%',
@@ -398,12 +398,47 @@ function initializeThemeToggle() {
         zIndex: '1000',
         transition: 'all 0.3s ease'
     });
-    
+
     themeToggle.addEventListener('click', () => {
         document.body.classList.toggle('dark-theme');
         const isDark = document.body.classList.contains('dark-theme');
         themeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
     });
-    
+
     document.body.appendChild(themeToggle);
 }
+
+// ページ遷移アニメーション
+const transitionLink = document.querySelector('a[href="experience.html"]');
+
+transitionLink.addEventListener('click', (event) => {
+    event.preventDefault();
+    const mainContent = document.getElementById('main-content');
+    mainContent.classList.add('fade-out');
+
+    setTimeout(() => {
+        window.location.href = 'experience.html';
+    }, 500); // アニメーションの時間に合わせる
+});
+
+// ページ遷移のアニメーションを追加
+const links = document.querySelectorAll('a');
+
+links.forEach(link => {
+    link.addEventListener('click', (event) => {
+        const href = link.getAttribute('href');
+
+        // 内部リンクのみ処理
+        if (href && href.endsWith('.html')) {
+            event.preventDefault();
+
+            // フェードアウトとスライド効果を適用
+            document.body.classList.add('fade-slide-out');
+
+            // 遷移を遅延させる
+            setTimeout(() => {
+                window.location.href = href;
+            }, 800); // CSSアニメーションの時間に合わせる
+        }
+    });
+});
