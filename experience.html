@@ -35,6 +35,16 @@
             margin-bottom: 3rem;
             font-weight: 700;
             position: relative;
+            opacity: 0;
+            transform: translateY(-50px) rotateX(30deg);
+            animation: titleFadeIn 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes titleFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateX(0);
+            }
         }
 
         .page-title::after {
@@ -42,11 +52,18 @@
             position: absolute;
             bottom: -15px;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(-50%) scaleX(0);
             width: 100px;
             height: 4px;
             background: var(--secondary-color);
             border-radius: 2px;
+            animation: underlineExpand 1s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
+        }
+
+        @keyframes underlineExpand {
+            to {
+                transform: translateX(-50%) scaleX(1);
+            }
         }
 
         .values-list {
@@ -57,6 +74,7 @@
             margin: 2rem 0;
         }
 
+        /* 価値観タグの豪華アニメーション */
         .value-tag {
             background: var(--secondary-color);
             color: white;
@@ -64,12 +82,36 @@
             border-radius: 25px;
             font-weight: 500;
             box-shadow: var(--shadow);
-            transition: var(--transition);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0;
+            transform: translateY(30px) scale(0.9) rotateZ(-10deg);
+            animation: valueTagFloat 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .value-tag:nth-child(1) { animation-delay: 0.2s; }
+        .value-tag:nth-child(2) { animation-delay: 0.4s; }
+        .value-tag:nth-child(3) { animation-delay: 0.6s; }
+        .value-tag:nth-child(4) { animation-delay: 0.8s; }
+        .value-tag:nth-child(5) { animation-delay: 1.0s; }
+
+        @keyframes valueTagFloat {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9) rotateZ(-10deg);
+            }
+            50% {
+                opacity: 0.8;
+                transform: translateY(-10px) scale(1.05) rotateZ(5deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1) rotateZ(0);
+            }
         }
 
         .value-tag:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-hover);
+            transform: translateY(-8px) scale(1.1) rotateZ(2deg);
+            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.3);
         }
 
         .highlight-box {
@@ -89,7 +131,7 @@
             font-weight: 600;
         }
 
-        /* アコーディオンスタイル - ホーム画面と統一 */
+        /* アコーディオンの豪華アニメーション */
         .accordion-item {
             background: white;
             border-radius: 15px;
@@ -97,13 +139,37 @@
             box-shadow: var(--shadow);
             overflow: hidden;
             border: 1px solid var(--border-color);
-            transition: var(--transition);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0;
+            transform: translateX(-100px) rotateY(30deg);
+            animation: accordionSlideIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .accordion-item:nth-child(1) { animation-delay: 0.3s; }
+        .accordion-item:nth-child(2) { animation-delay: 0.6s; }
+        .accordion-item:nth-child(3) { animation-delay: 0.9s; }
+
+        @keyframes accordionSlideIn {
+            0% {
+                opacity: 0;
+                transform: translateX(-100px) rotateY(30deg);
+            }
+            70% {
+                opacity: 0.8;
+                transform: translateX(10px) rotateY(-5deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0) rotateY(0);
+            }
         }
 
         .accordion-item:hover {
-            box-shadow: var(--shadow-hover);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
         }
 
+        /* アコーディオンヘッダーの豪華効果 */
         .accordion-header {
             background: var(--section-bg);
             border: none;
@@ -117,21 +183,40 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: var(--transition);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .accordion-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .accordion-header:hover::before {
+            left: 100%;
         }
 
         .accordion-header:hover {
-            background-color: #ecf0f1;
+            background: linear-gradient(135deg, var(--section-bg), #f0f4f8);
+            transform: translateX(5px);
         }
 
         .accordion-icon {
-            transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
             font-size: 1.2rem;
             color: var(--secondary-color);
         }
 
         .accordion-header.active .accordion-icon {
-            transform: rotate(180deg);
+            transform: rotate(180deg) scale(1.2);
+            color: var(--accent-color);
         }
 
         .accordion-content {
@@ -153,6 +238,7 @@
             color: var(--text-color);
         }
 
+        /* 実績ボックスの豪華アニメーション */
         .achievement-box {
             background: var(--section-bg);
             border-left: 4px solid var(--secondary-color);
@@ -160,42 +246,87 @@
             margin: 1.5rem 0;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0;
+            transform: translateX(50px) scale(0.95);
+            animation: achievementSlideIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            position: relative;
+            overflow: hidden;
         }
 
-        .achievement-box strong {
-            color: var(--primary-color);
-            font-size: 1.1rem;
-            display: block;
-            margin-bottom: 0.5rem;
+        .achievement-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(52, 152, 219, 0.1), transparent);
+            transition: left 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .goals-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin: 2rem 0;
+        .achievement-box:hover::before {
+            left: 100%;
         }
 
+        @keyframes achievementSlideIn {
+            0% {
+                opacity: 0;
+                transform: translateX(50px) scale(0.95);
+            }
+            60% {
+                opacity: 0.8;
+                transform: translateX(-10px) scale(1.02);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        .achievement-box:hover {
+            transform: translateX(10px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.2);
+            border-left-width: 6px;
+        }
+
+        /* ゴールカードの豪華アニメーション */
         .goal-card {
             background: white;
             padding: 2rem;
             border-radius: 15px;
             text-align: center;
             box-shadow: var(--shadow);
-            transition: var(--transition);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             border: 1px solid var(--border-color);
+            opacity: 0;
+            transform: translateY(50px) rotateX(30deg);
+            animation: goalCardFloat 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .goal-card:nth-child(1) { animation-delay: 0.2s; }
+        .goal-card:nth-child(2) { animation-delay: 0.4s; }
+        .goal-card:nth-child(3) { animation-delay: 0.6s; }
+        .goal-card:nth-child(4) { animation-delay: 0.8s; }
+
+        @keyframes goalCardFloat {
+            0% {
+                opacity: 0;
+                transform: translateY(50px) rotateX(30deg);
+            }
+            50% {
+                opacity: 0.8;
+                transform: translateY(-10px) rotateX(-5deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) rotateX(0);
+            }
         }
 
         .goal-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-hover);
-        }
-
-        .goal-card h4 {
-            margin-top: 0;
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            color: var(--primary-color);
+            transform: translateY(-15px) scale(1.05) rotateZ(2deg);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
         }
 
         .goal-card i {
@@ -203,8 +334,15 @@
             color: var(--secondary-color);
             margin-bottom: 1rem;
             display: block;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
+        .goal-card:hover i {
+            transform: scale(1.2) rotateY(360deg);
+            color: var(--accent-color);
+        }
+
+        /* 結論ボックスの豪華アニメーション */
         .conclusion-box {
             background: var(--section-bg);
             padding: 3rem;
@@ -213,33 +351,41 @@
             text-align: center;
             box-shadow: var(--shadow);
             border: 1px solid var(--border-color);
+            opacity: 0;
+            transform: scale(0.9) rotateY(30deg);
+            animation: conclusionFadeIn 1.5s cubic-bezier(0.16, 1, 0.3, 1) 1.5s forwards;
         }
 
-        .conclusion-box h2 {
-            margin-top: 0;
-            font-size: 2rem;
-            color: var(--primary-color);
-            margin-bottom: 1.5rem;
+        @keyframes conclusionFadeIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.9) rotateY(30deg);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1.05) rotateY(-5deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotateY(0);
+            }
         }
 
-        .back-btn {
-            display: inline-block;
-            background: var(--secondary-color);
-            color: white;
-            padding: 1rem 2rem;
-            text-decoration: none;
-            border-radius: 50px;
-            margin-top: 2rem;
-            transition: var(--transition);
-            box-shadow: var(--shadow);
-            font-weight: 600;
-            font-size: 1rem;
+        /* スクロール時の追加アニメーション */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .back-btn:hover {
-            background: var(--primary-color);
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-hover);
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* パフォーマンス最適化 */
+        .will-change {
+            will-change: transform, opacity;
         }
 
         @media (max-width: 768px) {
@@ -317,16 +463,16 @@
     <div class="experience-page">
         <h1 class="page-title">挑戦と未来</h1>
 
-        <div class="highlight-box">
+        <div class="highlight-box scroll-reveal">
             <p style="text-align: center; font-size: 1.2rem; margin-bottom: 1rem;">
                 <i class="fas fa-heart"></i> 私が大切にしている <strong>5つの価値観</strong> <i class="fas fa-heart"></i>
             </p>
             <div class="values-list">
-                <span class="value-tag"><i class="fas fa-rocket"></i> 挑戦心</span>
-                <span class="value-tag"><i class="fas fa-search"></i> 好奇心</span>
-                <span class="value-tag"><i class="fas fa-dumbbell"></i> 粘り強さ</span>
-                <span class="value-tag"><i class="fas fa-arrows-alt"></i> 柔軟性</span>
-                <span class="value-tag"><i class="fas fa-users"></i> 協調性</span>
+                <span class="value-tag will-change"><i class="fas fa-rocket"></i> 挑戦心</span>
+                <span class="value-tag will-change"><i class="fas fa-search"></i> 好奇心</span>
+                <span class="value-tag will-change"><i class="fas fa-dumbbell"></i> 粘り強さ</span>
+                <span class="value-tag will-change"><i class="fas fa-arrows-alt"></i> 柔軟性</span>
+                <span class="value-tag will-change"><i class="fas fa-users"></i> 協調性</span>
             </div>
             <p style="text-align: center; margin-top: 1.5rem; font-size: 1.1rem;">
                 これらを意識するようになった背景には、私が経験してきた<span class="highlight-text">3つの大きな挑戦</span>があります。<br>
@@ -335,7 +481,7 @@
         </div>
 
         <div class="accordion">
-            <div class="accordion-item">
+            <div class="accordion-item will-change">
                 <button class="accordion-header">
                     <span>第一の挑戦：大学受験での挫折と再起</span>
                     <i class="fas fa-chevron-down accordion-icon"></i>
@@ -358,7 +504,7 @@
                 </div>
             </div>
 
-            <div class="accordion-item">
+            <div class="accordion-item will-change">
                 <button class="accordion-header">
                     <span>第二の挑戦：編入試験と1年間の挑戦</span>
                     <i class="fas fa-chevron-down accordion-icon"></i>
@@ -376,8 +522,24 @@
                         <div class="achievement-box">
                             <strong><i class="fas fa-trophy"></i> 資格・試験への挑戦</strong><br>
                             • 基本情報技術者試験 <span style="color: #27ae60; font-weight: bold;">合格</span><br>
-                            • 応用情報技術者試験 <span style="color: #27ae60; font-weight: bold;">合格</span><br>
-                            • TOEIC 5回受験 → <span class="highlight-text">670点（L330/R340）</span>達成
+                            • 応用情報技術者試験 <span style="color: #e67e22; font-weight: bold;">挑戦中（3回不合格、4回目2025/10/12予定）</span><br>
+<div style="margin-left:1.5em; font-size:0.98em; margin-bottom:0.5em;">
+  <strong>1回目（2024/4/20）</strong><br>
+  午前：81.25点（ストラテジ系21.25点(85%)、マネジメント系8.75点(70%)、テクノロジ系51.25点(70%)）<br>
+  午後：47点<br>
+  選択問題：経営戦略、プログラミング、組込みシステム開発、情報システム開発<br>
+  <strong>2回目（2024/10/13）</strong><br>
+    <span style="color:#888;">※この回から新シラバスに変更</span><br>
+  午前：76.25点（ストラテジ系21.25点(85%)、マネジメント系11.25点(90%)、テクノロジ系43.75点(70%)）<br>
+  午後：58点<br>
+  選択問題：ネットワーク、データベース、組込みシステム、システム監査<br>
+  <strong>3回目（2025/4/20）</strong><br>
+  午前：73.75点（ストラテジ系17.50点(70%)、マネジメント系8.75点(70%)、テクノロジ系47.50点(76%)）<br>
+  午後：54点<br>
+  選択問題：経営戦略、プログラミング、ネットワーク、組込みシステム開発<br>
+  <strong>4回目（2025/10/12）</strong> <span style="color:#e67e22;">挑戦予定！</span>
+</div>
+                            • TOEIC 2024/3/10受験 → <span class="highlight-text">670点（L330/R340）</span>達成
                         </div>
                         <div class="achievement-box">
                             <strong><i class="fas fa-calculator"></i> 数学の独学</strong><br>
@@ -392,7 +554,7 @@
                 </div>
             </div>
 
-            <div class="accordion-item">
+            <div class="accordion-item will-change">
                 <button class="accordion-header">
                     <span>第三の挑戦：現在とこれからの目標</span>
                     <i class="fas fa-chevron-down accordion-icon"></i>
@@ -407,19 +569,19 @@
                             <i class="fas fa-bullseye"></i> 現在取り組んでいる4つのこと
                         </h3>
                         <div class="goals-grid">
-                            <div class="goal-card">
+                            <div class="goal-card will-change">
                                 <h4><i class="fas fa-trophy"></i> 競技プログラミング</h4>
                                 <p>AtCoderで水色コーダーを目指し、difficulty 400以上の問題に挑戦中</p>
                             </div>
-                            <div class="goal-card">
+                            <div class="goal-card will-change">
                                 <h4><i class="fas fa-certificate"></i> 高度資格</h4>
                                 <p>情報処理安全確保支援士などの高度資格に挑戦</p>
                             </div>
-                            <div class="goal-card">
+                            <div class="goal-card will-change">
                                 <h4><i class="fas fa-globe"></i> 英語力向上</h4>
                                 <p>TOEIC800点を目標に、技術書やエラーメッセージの読解力向上</p>
                             </div>
-                            <div class="goal-card">
+                            <div class="goal-card will-change">
                                 <h4><i class="fas fa-code"></i> 開発スキル</h4>
                                 <p>家計簿アプリなどの作品制作、Git・DB運用スキルの習得</p>
                             </div>
@@ -476,17 +638,84 @@
             });
         });
 
+        // スクロール時の豪華アニメーション
+        function initScrollAnimations() {
+            const scrollElements = document.querySelectorAll('.scroll-reveal');
+            
+            const elementInView = (el, dividend = 1) => {
+                const elementTop = el.getBoundingClientRect().top;
+                return (
+                    elementTop <= 
+                    (window.innerHeight || document.documentElement.clientHeight) / dividend
+                );
+            };
+            
+            const displayScrollElement = (element) => {
+                element.classList.add('revealed');
+            };
+            
+            const hideScrollElement = (element) => {
+                element.classList.remove('revealed');
+            };
+            
+            const handleScrollAnimation = () => {
+                scrollElements.forEach((el) => {
+                    if (elementInView(el, 1.25)) {
+                        displayScrollElement(el);
+                    } else {
+                        hideScrollElement(el);
+                    }
+                });
+            };
+            
+            window.addEventListener('scroll', () => {
+                handleScrollAnimation();
+            });
+            
+            // 初回実行
+            handleScrollAnimation();
+        }
+
+        // パフォーマンス最適化のためのIntersection Observer
+        function initIntersectionObserver() {
+            const options = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.transform = 'translateY(0) scale(1)';
+                        entry.target.style.opacity = '1';
+                    }
+                });
+            }, options);
+
+            // 実績ボックスの監視
+            const achievementBoxes = document.querySelectorAll('.achievement-box');
+            achievementBoxes.forEach(box => {
+                observer.observe(box);
+            });
+        }
+
         // ページ読み込み時のアニメーション
         document.addEventListener('DOMContentLoaded', () => {
+            initScrollAnimations();
+            initIntersectionObserver();
+            
+            // 要素の初期化
             const elements = document.querySelectorAll('.value-tag, .goal-card, .accordion-item');
             elements.forEach((element, index) => {
-                element.style.opacity = '0';
-                element.style.transform = 'translateY(20px)';
-                setTimeout(() => {
-                    element.style.transition = 'all 0.6s ease';
-                    element.style.opacity = '1';
-                    element.style.transform = 'translateY(0)';
-                }, index * 100);
+                element.style.animationDelay = `${index * 0.1}s`;
+            });
+
+            // パフォーマンス最適化
+            const willChangeElements = document.querySelectorAll('.will-change');
+            willChangeElements.forEach(el => {
+                el.addEventListener('animationend', () => {
+                    el.style.willChange = 'auto';
+                });
             });
         });
     </script>

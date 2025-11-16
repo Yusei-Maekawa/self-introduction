@@ -442,3 +442,406 @@ links.forEach(link => {
         }
     });
 });
+
+// AtCoderセクションの初期化
+function initializeAtCoderSection() {
+    const atcoderCards = document.querySelectorAll('.atcoder-card');
+    
+    // スクロールアニメーション
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.classList.add('animate-in');
+                }, index * 200);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.2,
+        rootMargin: '0px 0px -50px 0px'
+    });
+    
+    atcoderCards.forEach(card => observer.observe(card));
+    
+    // AtCoder APIからデータを取得
+    fetchAtCoderData();
+}
+
+// AtCoderのデータを取得する関数
+async function fetchAtCoderData() {
+    const username = 'Y_Maekawa';
+    
+    // デフォルトデータ（API取得失敗時やローカル開発時に使用）
+    const fallbackData = {
+        algo: {
+            rating: 271,
+            highest: 288,
+            rank: '-',
+            contests: 20
+        },
+        heuristic: {
+            rating: 1241,
+            highest: 1247,
+            rank: '-',
+            contests: 5
+        }
+    };
+    
+    try {
+        // 優先順位1: GitHub Actionsで生成されたJSONファイルを読み込む
+        console.log('Trying to fetch from local JSON file...');
+        try {
+            const jsonResponse = await fetch('data/atcoder-rating.json', {
+                cache: 'no-cache',
+                headers: {
+                    'Cache-Control': 'no-cache'
+                }
+            });
+            
+            if (jsonResponse.ok) {
+                const jsonData = await jsonResponse.json();
+                console.log('✅ Successfully loaded data from JSON file:', jsonData);
+                
+                const atcoderData = {
+                    algo: {
+                        rating: jsonData.algorithm.current,
+                        highest: jsonData.algorithm.highest,
+                        highestPerformance: jsonData.algorithm.highestPerformance || 0,
+                        rank: jsonData.algorithm.rank === '-' ? '-' : `${jsonData.algorithm.rank}位`,
+                        contests: jsonData.algorithm.contests,
+                        remaining: jsonData.algorithm.remaining,
+                        achieved: jsonData.algorithm.achieved
+                    },
+                    heuristic: {
+                        rating: jsonData.heuristic.current,
+                        highest: jsonData.heuristic.highest,
+                        highestPerformance: jsonData.heuristic.highestPerformance || 0,
+                        rank: jsonData.heuristic.rank === '-' ? '-' : `${jsonData.heuristic.rank}位`,
+                        contests: jsonData.heuristic.contests,
+                        remaining: jsonData.heuristic.remaining,
+                        achieved: jsonData.heuristic.achieved
+                    }
+                };
+                
+                displayAtCoderData(atcoderData);
+                updateLastUpdateTime(true, jsonData.lastUpdated);
+                return;
+            }
+        } catch (jsonError) {
+            console.warn('Failed to load JSON file, trying API...', jsonError.message);
+        }
+        
+        // 優先順位2: AtCoder APIから直接取得を試みる
+        const apiEndpoints = [
+            `https://atcoder.jp/users/${username}/history/json`,
+            `https://kenkoooo.com/atcoder/atcoder-api/v3/user/rating_history?user=${username}`
+        ];
+        
+        let apiSuccess = false;
+        
+        for (const endpoint of apiEndpoints) {
+            try {
+                console.log(`Trying API: ${endpoint}`);
+                const response = await fetch(endpoint, {
+                    mode: 'cors',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const ratingHistory = await response.json();
+                    if (ratingHistory && ratingHistory.length > 0) {
+                        console.log('✅ API Success:', endpoint);
+                        
+                        // データを解析
+                        const atcoderData = parseRatingHistory(ratingHistory);
+                        displayAtCoderData(atcoderData);
+                        updateLastUpdateTime(true);
+                        return;
+                    }
+                }
+            } catch (apiError) {
+                console.warn(`Failed to fetch from ${endpoint}:`, apiError.message);
+                continue;
+            }
+        }
+        
+        // すべて失敗した場合はフォールバックデータを使用
+        console.warn('All data sources failed, using fallback data');
+        displayAtCoderData(fallbackData);
+        updateLastUpdateTime(false);
+        
+    } catch (error) {
+        console.error('AtCoderデータの取得エラー:', error);
+        displayAtCoderData(fallbackData);
+        updateLastUpdateTime(false);
+    }
+}
+
+// レーティング履歴を解析する関数
+function parseRatingHistory(ratingHistory) {
+    const algoContests = ratingHistory.filter(c => {
+        const cid = (c.contest_id || c.ContestScreenName || '').toLowerCase();
+        return !cid.includes('ahc') && !cid.includes('marathon');
+    });
+    
+    const heuristicContests = ratingHistory.filter(c => {
+        const cid = (c.contest_id || c.ContestScreenName || '').toLowerCase();
+        return cid.includes('ahc') || cid.includes('marathon');
+    });
+    
+    const atcoderData = {
+        algo: { rating: 271, highest: 288, rank: '-', contests: 0 },
+        heuristic: { rating: 1241, highest: 1247, rank: '-', contests: 0 }
+    };
+    
+    if (algoContests.length > 0) {
+        const latestAlgo = algoContests[algoContests.length - 1];
+        const highestAlgo = Math.max(...algoContests.map(c => c.NewRating || c.new_rating || 0));
+        atcoderData.algo = {
+            rating: latestAlgo.NewRating || latestAlgo.new_rating || 0,
+            highest: highestAlgo,
+            rank: (latestAlgo.Place || latestAlgo.place) ? `${latestAlgo.Place || latestAlgo.place}位` : '-',
+            contests: algoContests.length
+        };
+    }
+    
+    if (heuristicContests.length > 0) {
+        const latestHeuristic = heuristicContests[heuristicContests.length - 1];
+        const highestHeuristic = Math.max(...heuristicContests.map(c => c.NewRating || c.new_rating || 0));
+        atcoderData.heuristic = {
+            rating: latestHeuristic.NewRating || latestHeuristic.new_rating || 0,
+            highest: highestHeuristic,
+            rank: (latestHeuristic.Place || latestHeuristic.place) ? `${latestHeuristic.Place || latestHeuristic.place}位` : '-',
+            contests: heuristicContests.length
+        };
+    }
+    
+    return atcoderData;
+}
+
+// 最終更新時刻を表示
+function updateLastUpdateTime(apiSuccess = false, lastUpdated = null) {
+    const noteElement = document.querySelector('.atcoder-note p');
+    if (noteElement) {
+        let timeString;
+        
+        if (lastUpdated) {
+            // JSONファイルから取得した場合は、そのタイムスタンプを使用
+            const date = new Date(lastUpdated);
+            timeString = date.toLocaleString('ja-JP', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZone: 'Asia/Tokyo'
+            });
+        } else {
+            // 現在時刻を使用
+            const now = new Date();
+            timeString = now.toLocaleString('ja-JP', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        const originalText = '水色コーダー（レート1200以上）を目指して、日々精進中です！';
+        const statusText = apiSuccess 
+            ? `<span style="color: #00c0c0;">✓ 最新データ</span>` 
+            : `<span style="color: #ff8000;">⚠ ローカルデータ</span>`;
+        noteElement.innerHTML = `${originalText}<br><small style="color: #888; font-size: 0.85em;">最終更新: ${timeString} | ${statusText}</small>`;
+    }
+}
+
+// AtCoderデータを表示する関数
+function displayAtCoderData(atcoderData) {
+    const atcoderCards = document.querySelectorAll('.atcoder-card');
+    
+    atcoderCards.forEach(card => {
+        const contestType = card.getAttribute('data-contest-type');
+        const data = atcoderData[contestType];
+        
+        if (data) {
+            // レーティング円の要素
+            const ratingElement = card.querySelector('.rating-value');
+            const ratingCircle = card.querySelector('.atcoder-rating-circle');
+            const targetRating = data.rating;
+            
+            // data属性を更新
+            ratingElement.setAttribute('data-rating', targetRating);
+            
+            // レーティングのカウントアップアニメーション（灰→茶→緑→水...と色を変えながら）
+            animateRatingWithColorTransition(ratingElement, ratingCircle, targetRating);
+            
+            // 最高レート表示（円形・RATINGと同じ形式）
+            const highestStat = card.querySelector('[data-stat="highest"]');
+            const highestCircle = card.querySelector('[data-stat-circle="highest"]');
+            if (highestStat && highestCircle && data.highest) {
+                highestStat.setAttribute('data-rating', data.highest);
+                animateRatingWithColorTransition(highestStat, highestCircle, data.highest);
+            }
+            
+            // 最高パフォーマンス表示（円形・RATINGと同じ形式）
+            const performanceStat = card.querySelector('[data-stat="performance"]');
+            const performanceCircle = card.querySelector('[data-stat-circle="performance"]');
+            if (performanceStat && performanceCircle && data.highestPerformance) {
+                performanceStat.setAttribute('data-rating', data.highestPerformance);
+                animateRatingWithColorTransition(performanceStat, performanceCircle, data.highestPerformance);
+            }
+        }
+    });
+}
+
+// レーティングを色遷移付きでアニメーションする関数
+// グローバルのレーティング色境界
+const RATING_COLORS = [
+    { min: 0, max: 399, color: '#808080', name: 'グレー', class: 'rating-gray' },
+    { min: 400, max: 799, color: '#804000', name: '茶色', class: 'rating-brown' },
+    { min: 800, max: 1199, color: '#008000', name: '緑', class: 'rating-green' },
+    { min: 1200, max: 1599, color: '#00c0c0', name: '水色', class: 'rating-cyan' },
+    { min: 1600, max: 1999, color: '#0000ff', name: 'ブルー', class: 'rating-blue' },
+    { min: 2000, max: 2399, color: '#c0c000', name: 'イエロー', class: 'rating-yellow' },
+    { min: 2400, max: 2799, color: '#ff8000', name: 'オレンジ', class: 'rating-orange' },
+    { min: 2800, max: 9999, color: '#ff0000', name: 'レッド', class: 'rating-red' }
+];
+
+function animateRatingWithColorTransition(ratingElement, ratingCircle, targetRating) {
+    const duration = 2500; // 2.5秒
+    const steps = 50;
+    const increment = targetRating / steps;
+    const stepDuration = duration / steps;
+    
+    let currentRating = 0;
+    let stepCount = 0;
+    
+    // ローカルの配列は使わず、グローバルの RATING_COLORS を使用
+    
+    const timer = setInterval(() => {
+        currentRating += increment;
+        stepCount++;
+        
+        // 現在のレーティングに対応する色を取得
+        const colorInfo = RATING_COLORS.find(c => currentRating >= c.min && currentRating <= c.max) || RATING_COLORS[0];
+        
+        // 色クラスを更新
+        ratingCircle.className = 'atcoder-rating-circle';
+        ratingCircle.classList.add(colorInfo.class);
+        ratingCircle.style.background = `linear-gradient(135deg, ${colorInfo.color}, ${colorInfo.color}dd)`;
+        
+        // レーティング値を更新
+        if (currentRating >= targetRating) {
+            ratingElement.textContent = targetRating;
+            clearInterval(timer);
+            
+            // 完了時のパルスエフェクト
+            ratingElement.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                ratingElement.style.transform = 'scale(1)';
+            }, 200);
+            
+            // ツールチップを設定
+            ratingElement.setAttribute('title', `${colorInfo.name}コーダー (${targetRating})`);
+        } else {
+            ratingElement.textContent = Math.floor(currentRating);
+        }
+    }, stepDuration);
+}
+
+// 統計値をアニメーション表示する関数
+function animateStatValue(element, targetValue) {
+    const duration = 1500;
+    const steps = 40;
+    const increment = targetValue / steps;
+    const stepDuration = duration / steps;
+    
+    let currentValue = 0;
+    
+    const timer = setInterval(() => {
+        currentValue += increment;
+        
+        if (currentValue >= targetValue) {
+            element.textContent = targetValue;
+            clearInterval(timer);
+        } else {
+            element.textContent = Math.floor(currentValue);
+        }
+    }, stepDuration);
+}
+
+    // 任意の数値要素を色遷移付きでアニメーションする汎用関数
+    function animateValueWithColorTransition(element, targetValue, options = {}) {
+        const duration = options.duration || 1200;
+        const steps = options.steps || 30;
+        const increment = targetValue / steps;
+        const stepDuration = duration / steps;
+        const applyClass = options.applyClass !== undefined ? options.applyClass : true;
+    
+        let currentValue = 0;
+    
+        const clearColorClasses = () => {
+            RATING_COLORS.forEach(c => element.classList.remove(c.class));
+        };
+    
+        const timer = setInterval(() => {
+            currentValue += increment;
+        
+            // カラー境界に応じたクラスを更新
+            const colorInfo = RATING_COLORS.find(c => currentValue >= c.min && currentValue <= c.max) || RATING_COLORS[0];
+            if (applyClass) {
+                clearColorClasses();
+                element.classList.add(colorInfo.class);
+            } else {
+                // inline color fallback
+                element.style.color = colorInfo.color;
+            }
+        
+            if (currentValue >= targetValue) {
+                element.textContent = targetValue;
+                clearInterval(timer);
+            } else {
+                element.textContent = Math.floor(currentValue);
+            }
+        }, stepDuration);
+    }
+
+// メインコンテンツの機能を初期化
+function initializeMainContentFeatures() {
+    initializeScrollAnimations();
+    initializeAtCoderSection();
+    setTimeout(() => {
+        initializeTypingEffect();
+    }, 500);
+}
+
+// データを手動で再読み込み
+function reloadAtCoderData() {
+    const btn = document.querySelector('.atcoder-reload-btn');
+    if (btn) {
+        btn.classList.add('loading');
+        btn.disabled = true;
+    }
+    
+    // レート表示をリセット
+    const ratingValues = document.querySelectorAll('.rating-value');
+    ratingValues.forEach(el => el.textContent = '...');
+    
+    // データを再取得
+    fetchAtCoderData().finally(() => {
+        if (btn) {
+            setTimeout(() => {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }, 500);
+        }
+    });
+}
+
+// グローバルスコープに公開
+window.reloadAtCoderData = reloadAtCoderData;
+

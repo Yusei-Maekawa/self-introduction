@@ -1,0 +1,23 @@
+{
+  "username": "Y_Maekawa",
+  "goal": 1200,
+  "lastUpdated": "2025-11-16T00:00:00Z",
+  "algorithm": {
+    "current": 271,
+    "highest": 288,
+    "highestPerformance": 527,
+    "contests": 20,
+    "rank": "-",
+    "remaining": 929,
+    "achieved": false
+  },
+  "heuristic": {
+    "current": 1241,
+    "highest": 1247,
+    "highestPerformance": 1859,
+    "contests": 5,
+    "rank": "-",
+    "remaining": 0,
+    "achieved": true
+  }
+}

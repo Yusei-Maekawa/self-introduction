@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>コンテスト実績 - Yusei Maekawa</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="container nav-container">
+                <a href="index.html" class="nav-brand">Yusei Maekawa</a>
+                <button class="nav-toggle" id="navToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="index.html">ホーム</a></li>
+                    <li><a href="index.html#about">自己紹介</a></li>
+                    <li><a href="index.html#skills">スキル</a></li>
+                    <li><a href="index.html#atcoder">AtCoder</a></li>
+                    <li><a href="contest-achievements.html" class="active">コンテスト実績</a></li>
+                    <li><a href="index.html#experience">経験</a></li>
+                    <li><a href="index.html#contact">お問い合わせ</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- コンテスト実績セクション -->
+    <section id="contest-achievements" class="contest-achievements" style="padding-top: 8rem;">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">コンテスト実績</h2>
+                <p class="section-subtitle">ヒューリスティックコンテストへの挑戦</p>
+            </div>
+            
+            <div class="achievement-card">
+                <div class="achievement-header">
+                    <div class="achievement-title-section">
+                        <h3 class="achievement-title">
+                            <i class="fas fa-trophy"></i>
+                            AtCoder Heuristic Contest 048
+                        </h3>
+                        <div class="achievement-meta">
+                            <span class="achievement-date">
+                                <i class="far fa-calendar-alt"></i>
+                                2025年5月30日 ～ 6月9日（10日間）
+                            </span>
+                            <a href="https://github.com/Yusei-Maekawa/AtCoder-Heuristic-Contest048" 
+                               class="achievement-link" target="_blank" rel="noopener noreferrer">
+                                <i class="fab fa-github"></i> 詳細を見る
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="achievement-results">
+                    <div class="result-item highlight">
+                        <i class="fas fa-ranking-star"></i>
+                        <div class="result-content">
+                            <span class="result-label">最終順位</span>
+                            <span class="result-value">286位 / 1217人</span>
+                            <span class="result-badge">上位23.5%</span>
+                        </div>
+                    </div>
+                    <div class="result-item">
+                        <i class="fas fa-chart-line"></i>
+                        <div class="result-content">
+                            <span class="result-label">パフォーマンス</span>
+                            <span class="result-value">1658</span>
+                        </div>
+                    </div>
+                    <div class="result-item">
+                        <i class="fas fa-arrow-trend-up"></i>
+                        <div class="result-content">
+                            <span class="result-label">レート上昇</span>
+                            <span class="result-value">+808</span>
+                        </div>
+                    </div>
+                    <div class="result-item">
+                        <i class="fas fa-medal"></i>
+                        <div class="result-content">
+                            <span class="result-label">達成率</span>
+                            <span class="result-value">212.7%</span>
+                            <span class="result-note">（目標：上位50%）</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="achievement-description">
+                    <h4><i class="fas fa-bullseye"></i> 参加の動機</h4>
+                    <p>初めての長期コンテストということもあり、上位50%を目標に参加しました。学校で学んだ知識をアウトプットしたいという思いと、思考力や最適化問題に挑戦したいという気持ちから参加を決意しました。</p>
+                    
+                    <h4><i class="fas fa-lightbulb"></i> 取り組み内容</h4>
+                    <p>「高橋画伯の色彩チャレンジ」という調色パズル問題に挑戦。CMYの3次元色空間で目標色を精度高く調合する最適化問題でした。</p>
+                    <ul class="achievement-highlights">
+                        <li><strong>解法の進化：</strong> 貪欲法からTSP順序最適化、ウェル管理の最適化まで、12種類以上の解法を試行錯誤</li>
+                        <li><strong>スコア改善：</strong> 絶対得点を約135Mから18Mまで削減（-86%の誤差削減）</li>
+                        <li><strong>実装技術：</strong> 全探索、色空間最適化、動的ウェル管理、使用回数ペナルティなど多様な手法を実装</li>
+                        <li><strong>分析力：</strong> 各解法のスコア変化を詳細に記録し、効果的な改善策を継続的に導入</li>
+                    </ul>
+
+                    <h4><i class="fas fa-star"></i> 感想</h4>
+                    <p>参加期間中は、スコアが上がる楽しさと改善ポイントの分析に無我夢中で取り組みました。目標を大きく上回る上位23.5%という結果を残せたことは、初参加としては非常に良い成果だったと感じています。次回も機会があればぜひ参加したいです。</p>
+
+                    <h4><i class="fas fa-code-branch"></i> 問題概要</h4>
+                    <p><strong>「高橋画伯の色彩チャレンジ」</strong> - 水彩画の調色パズル問題</p>
+                    <div class="problem-details">
+                        <h5>問題設定</h5>
+                        <ul>
+                            <li>色はCMY（シアン、マゼンタ、イエロー）の3次元ベクトルで表現（各成分 ∈ [0, 1]）</li>
+                            <li>絵の具は混ぜると重み付き平均の色になる</li>
+                            <li>N×Nグリッドのパレットで色を管理</li>
+                            <li>仕切りの出し入れでウェル（連結マス集合）を分割・結合可能</li>
+                        </ul>
+
+                        <h5>主な操作</h5>
+                        <ul>
+                            <li><strong>操作1:</strong> チューブから1gを追加</li>
+                            <li><strong>操作2:</strong> 画伯に1gちょうど渡す（納品）</li>
+                            <li><strong>操作3:</strong> 任意量を廃棄</li>
+                            <li><strong>操作4:</strong> 仕切りの出し入れ（混合・分割）</li>
+                        </ul>
+
+                        <h5>得点計算</h5>
+                        <p>提出色と目標色の二乗誤差の合計を最小化する最適化問題</p>
+                    </div>
+
+                    <h4><i class="fas fa-rocket"></i> 解法の進化</h4>
+                    <div class="solution-timeline">
+                        <div class="solution-item">
+                            <h5>5/30（1日目）- 解法1～4</h5>
+                            <ul>
+                                <li>2本混ぜ最適化から開始</li>
+                                <li>TSP順序最適化 + 全仕切り下げ + 再利用戦略を導入</li>
+                                <li>パフォーマンス973達成</li>
+                            </ul>
+                        </div>
+                        <div class="solution-item">
+                            <h5>5/31（2日目）- 解法5～8</h5>
+                            <ul>
+                                <li>5×5ウェル分割による色管理の精密化</li>
+                                <li>混色 + 追加注ぎの全探索実装</li>
+                                <li>絶対得点を22Mまで改善（目標達成！）</li>
+                                <li>パフォーマンス1963、84位到達</li>
+                            </ul>
+                        </div>
+                        <div class="solution-item">
+                            <h5>6/1～6/2（3～4日目）- 解法9～12</h5>
+                            <ul>
+                                <li>ウェルサイズを3マスに変更（-200万点）</li>
+                                <li>ウェル使用の均等化によるペナルティ最適化</li>
+                                <li>絶対得点20M台を安定的に維持</li>
+                            </ul>
+                        </div>
+                        <div class="solution-item">
+                            <h5>6/5～6/9（最終調整）</h5>
+                            <ul>
+                                <li>2×2ウェル + 14×14制限で最終調整</li>
+                                <li>絶対得点18Mを達成（-86%改善）</li>
+                                <li>仕切り動作の活性化とウェル管理の最適化</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h4><i class="fas fa-tools"></i> 技術的な工夫</h4>
+                    <ul class="achievement-highlights">
+                        <li><strong>全探索の実装：</strong> 納品・追加注ぎ・混合・混合+追加注ぎの全組み合わせを評価</li>
+                        <li><strong>色差最小化：</strong> ユークリッド距離による色差計算と最適操作選択</li>
+                        <li><strong>容量管理：</strong> 各ウェルの残量を厳密に管理し、1g未満は使用不可</li>
+                        <li><strong>使用回数ペナルティ：</strong> 特定ウェルの偏った使用を防ぐ重み付け</li>
+                        <li><strong>隣接判定：</strong> マス単位での正確な混合可否判定</li>
+                        <li><strong>動的ウェルサイズ：</strong> 問題に応じてウェルサイズを調整（4→3→2マス）</li>
+                    </ul>
+
+                    <h4><i class="fas fa-graduation-cap"></i> 学んだこと</h4>
+                    <ul class="achievement-highlights">
+                        <li><strong>最適化の難しさ：</strong> 局所最適解に陥らないための探索戦略の重要性</li>
+                        <li><strong>パラメータ調整：</strong> ウェルサイズやペナルティの微調整が大きな影響を与える</li>
+                        <li><strong>分析の価値：</strong> スコア変化を記録し、効果を検証することの重要性</li>
+                        <li><strong>試行錯誤の楽しさ：</strong> アイデアを実装し、結果を見る喜び</li>
+                        <li><strong>時間管理：</strong> 10日間という長期戦での集中力維持</li>
+                    </ul>
+                </div>
+
+                <div class="back-to-home">
+                    <a href="index.html#atcoder" class="btn-primary">
+                        <i class="fas fa-arrow-left"></i> AtCoderセクションに戻る
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- フッター -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Yusei Maekawa. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

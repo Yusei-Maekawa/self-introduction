@@ -43,6 +43,12 @@
                         <a href="#skills" class="nav-link">スキル</a>
                     </li>
                     <li class="nav-item">
+                        <a href="#atcoder" class="nav-link">競技プログラミング</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="contest-achievements.html" class="nav-link">コンテスト実績</a>
+                    </li>
+                    <li class="nav-item">
                         <a href="#experience" class="nav-link">経験</a>
                     </li>
                     <li class="nav-item">
@@ -173,6 +179,77 @@
                         <h3>Tools</h3>
                         <p>Git, Docker, AWS, VS Code</p>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AtCoderセクション -->
+        <section id="atcoder" class="atcoder-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">競技プログラミング</h2>
+                    <p class="section-subtitle">AtCoderでのアルゴリズム力向上の取り組み</p>
+                </div>
+                <div class="atcoder-cards">
+                    <div class="atcoder-card" data-contest-type="algo">
+                        <div class="atcoder-card-header">
+                            <i class="fas fa-code"></i>
+                            <h3>アルゴリズム部門</h3>
+                        </div>
+                        <div class="atcoder-rating-circle">
+                            <div class="rating-value" data-rating="0">0</div>
+                            <div class="rating-label">Rating</div>
+                        </div>
+                        <div class="atcoder-stats">
+                            <div class="atcoder-rating-circle" data-stat-circle="highest">
+                                <div class="rating-value" data-stat="highest">0</div>
+                                <div class="rating-label">最高レート</div>
+                            </div>
+                            <div class="atcoder-rating-circle" data-stat-circle="performance">
+                                <div class="rating-value" data-stat="performance">0</div>
+                                <div class="rating-label">最高パフォ</div>
+                            </div>
+                        </div>
+                        <a href="https://atcoder.jp/users/Y_Maekawa?contestType=algo" 
+                           class="atcoder-link" target="_blank" rel="noopener noreferrer">
+                            <i class="fas fa-external-link-alt"></i> プロフィールを見る
+                        </a>
+                    </div>
+                    <div class="atcoder-card" data-contest-type="heuristic">
+                        <div class="atcoder-card-header">
+                            <i class="fas fa-brain"></i>
+                            <h3>ヒューリスティック部門</h3>
+                        </div>
+                        <div class="atcoder-rating-circle">
+                            <div class="rating-value" data-rating="0">0</div>
+                            <div class="rating-label">Rating</div>
+                        </div>
+                        <div class="atcoder-stats">
+                            <div class="atcoder-rating-circle" data-stat-circle="highest">
+                                <div class="rating-value" data-stat="highest">0</div>
+                                <div class="rating-label">最高レート</div>
+                            </div>
+                            <div class="atcoder-rating-circle" data-stat-circle="performance">
+                                <div class="rating-value" data-stat="performance">0</div>
+                                <div class="rating-label">最高パフォ</div>
+                            </div>
+                        </div>
+                        <a href="https://atcoder.jp/users/Y_Maekawa?contestType=heuristic" 
+                           class="atcoder-link" target="_blank" rel="noopener noreferrer">
+                            <i class="fas fa-external-link-alt"></i> プロフィールを見る
+                        </a>
+                        <a href="contest-achievements.html" 
+                           class="atcoder-link contest-log-link">
+                            <i class="fas fa-book"></i> 参加記
+                        </a>
+                    </div>
+                </div>
+                <div class="atcoder-note">
+                    <i class="fas fa-info-circle"></i>
+                    <p>水色コーダー（レート1200以上）を目指して、日々精進中です！</p>
+                    <button class="atcoder-reload-btn" onclick="reloadAtCoderData()">
+                        <i class="fas fa-sync-alt"></i> データを更新
+                    </button>
                 </div>
             </div>
         </section>
