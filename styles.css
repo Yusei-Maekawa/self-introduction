@@ -263,7 +263,13 @@ body {
     width: 100%;
     top: 0;
     z-index: 1000;
-    transition: var(--transition);
+    transition: all 0.3s ease;
+}
+
+.navbar.scrolled {
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem 0;
 }
 
 .nav-container {
@@ -364,9 +370,53 @@ body {
 }
 
 .hero-subtitle {
-    font-size: 1.2rem;
+    font-size: 1.6rem;
+    font-weight: 500;
     margin-bottom: 2rem;
-    color: rgba(255, 255, 255, 0.9);
+    min-height: 3em; /* タイピング時のレイアウトシフト防止 */
+    line-height: 1.6;
+    text-align: center;
+    /* グラデーションテキスト */
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #e3e8f0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    /* テキストシャドウで立体感 */
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+    /* アニメーション */
+    animation: textGlow 3s ease-in-out infinite;
+}
+
+@keyframes textGlow {
+    0%, 100% { 
+        filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+    }
+    50% { 
+        filter: drop-shadow(0 4px 16px rgba(255, 255, 255, 0.4)) 
+                drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+    }
+}
+
+/* Typed.jsカーソルのカスタマイズ */
+.hero-subtitle .typed-cursor {
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: var(--accent-color);
+    animation: cursorPulse 1s ease-in-out infinite;
+    /* グラデーションを解除してカーソルを表示 */
+    -webkit-text-fill-color: var(--accent-color);
+    filter: drop-shadow(0 0 10px rgba(231, 76, 60, 0.6));
+}
+
+@keyframes cursorPulse {
+    0%, 100% { 
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% { 
+        opacity: 0.7;
+        transform: scale(1.1);
+    }
 }
 
 .hero-buttons {
@@ -992,6 +1042,15 @@ body {
     
     .hero-name {
         font-size: 2rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.3rem;
+        min-height: 2.5em;
+    }
+    
+    .hero-subtitle .typed-cursor {
+        font-size: 1.5rem;
     }
     
     .hero-buttons {

@@ -18,7 +18,7 @@
  * 5. AtCoderレーティング取得・表示(JSON/API)
  * 6. レーティング円グラフアニメーション(SVG、12時起点右回転)
  * 7. お問い合わせフォーム(バリデーション、通知)
- * 8. タイピングエフェクト
+ * 8. Typed.jsによるタイピングエフェクト(複数テキストのループ表示)
  * 9. ページトップボタン
  *
  * 【English】
@@ -34,8 +34,24 @@
  * 5. AtCoder rating fetching and display (JSON/API)
  * 6. Rating circle graph animation (SVG, 12 o'clock start, clockwise)
  * 7. Contact form (validation, notifications)
- * 8. Typing effect
+ * 8. Typing effect with Typed.js (looping multiple strings)
  * 9. Scroll-to-top button
+ *
+ * ============================================================================
+ * 📦 外部ライブラリ / External Libraries
+ * ============================================================================
+ *
+ * - GSAP (GreenSock Animation Platform) v3.12.5: プロフェッショナルアニメーションライブラリ
+ *   - 高性能タイムラインアニメーション
+ *   - ScrollTriggerプラグイン: スクロール連動アニメーション
+ *   - イージング関数、スタガー、パララックス効果
+ *   - CDN: https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js
+ *   - ScrollTrigger: https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js
+ *
+ * - Typed.js v2.0.16: タイピングエフェクト用ライブラリ
+ *   - 複数の文字列をタイピング・削除・ループ表示
+ *   - カスタムカーソル、速度調整、ディレイ設定可能
+ *   - CDN: https://cdn.jsdelivr.net/npm/typed.js@2.0.16/dist/typed.umd.js
  *
  * ============================================================================
  * 🎯 グローバル変数 / Global Variables
@@ -69,7 +85,7 @@
  * 3. initializeMainContentFeatures()
  *    - 日本語: メインコンテンツの機能を初期化
  *    - English: Initialize main content features
- *    - 呼び出し: initializeScrollAnimations(), initializeAtCoderSection(), etc.
+ *    - 呼び出し: initializeScrollAnimations(), initializeTypingEffect(), etc.
  *
  * ◆ ナビゲーション / Navigation
  * ────────────────────────────────────────────────────────────────────────────
@@ -86,34 +102,47 @@
  * ◆ アニメーション / Animations
  * ────────────────────────────────────────────────────────────────────────────
  *
- * 6. initializeScrollAnimations()
- *    - 日本語: スクロールアニメーション設定(IntersectionObserver)
- *    - English: Set up scroll animations (IntersectionObserver)
+ * 6. initializeGSAP()
+ *    - 日本語: GSAP アニメーション初期化（ScrollTrigger含む）
+ *    - English: Initialize GSAP animations (including ScrollTrigger)
+ *    - 機能:
+ *      - ヒーローセクション: フェードイン、スケール、スタガー
+ *      - スキルカード: スクロール連動フェードアップ
+ *      - タイムライン: 左からスライドイン
+ *      - AtCoderカード: 弾性スケールアップ
+ *      - セクションタイトル: 左右交互スライド
+ *      - 統計数字: カウントアップ
+ *      - ナビバー: スクロール時クラス追加
+ *      - パララックス: ヒーロー画像視差効果
+ *
+ * 7. initializeScrollAnimations()
+ *    - 日本語: スクロールアニメーション設定(IntersectionObserver - フォールバック用)
+ *    - English: Set up scroll animations (IntersectionObserver - fallback)
  *    - 対象: .skill-card, .timeline-item, .contact-item, etc.
  *
- * 7. animateStatNumber(element: HTMLElement)
- *    - 日本語: 数値統計のカウントアップアニメーション
- *    - English: Count-up animation for numeric statistics
+ * 8. animateStatNumber(element: HTMLElement)
+ *    - 日本語: 数値統計のカウントアップアニメーション（フォールバック用）
+ *    - English: Count-up animation for numeric statistics (fallback)
  *    - 使用: .stat-number要素
  *
- * 8. initializeTypingEffect()
- *    - 日本語: ヒーローセクションのタイピングエフェクト
- *    - English: Typing effect for hero section
- *    - 使用: typeText(element, text, speed)
+ * 9. initializeTypingEffect()
+ *    - 日本語: ヒーローセクションのタイピングエフェクト（Typed.js使用）
+ *    - English: Typing effect for hero section (using Typed.js)
+ *    - 使用: typeText(element, text, speed) - フォールバック
  *
- * 9. typeText(element: HTMLElement, text: string, speed: number)
- *    - 日本語: タイプライター実装
- *    - English: Typewriter implementation
+ * 10. typeText(element: HTMLElement, text: string, speed: number)
+ *     - 日本語: タイプライター実装（フォールバック用）
+ *     - English: Typewriter implementation (fallback)
  *
  * ◆ AtCoder関連 / AtCoder Related
  * ────────────────────────────────────────────────────────────────────────────
  *
- * 10. initializeAtCoderSection()
+ * 11. initializeAtCoderSection()
  *     - 日本語: AtCoderセクション初期化、スクロールで表示時にアニメーション開始
  *     - English: Initialize AtCoder section, start animation when scrolled into view
  *     - IntersectionObserver使用、初回のみ実行
  *
- * 11. fetchAtCoderData()
+ * 12. fetchAtCoderData()
  *     - 日本語: AtCoderレーティングデータ取得(優先順位: ローカルJSON → API)
  *     - English: Fetch AtCoder rating data (priority: local JSON → API)
  *     - データソース: data/atcoder-rating.json, AtCoder API
@@ -301,6 +330,7 @@ function initializeSplashScreen() {
 
 // メインコンテンツの機能を初期化
 function initializeMainContentFeatures() {
+    initializeGSAP();
     initializeScrollAnimations();
     setTimeout(() => {
         initializeTypingEffect();
@@ -424,16 +454,220 @@ function animateStatNumber(element) {
     }, 30);
 }
 
+// GSAP アニメーション初期化
+function initializeGSAP() {
+    // GSAPが読み込まれているか確認
+    if (typeof gsap === 'undefined') {
+        console.warn('GSAP not loaded, using fallback animations');
+        return;
+    }
+
+    // ScrollTriggerプラグインを登録
+    gsap.registerPlugin(ScrollTrigger);
+
+    // ヒーローセクションのアニメーション
+    gsap.from('.hero-welcome-text', {
+        duration: 1.2,
+        y: -50,
+        opacity: 0,
+        ease: 'power3.out',
+        delay: 0.2
+    });
+
+    gsap.from('.hero-name', {
+        duration: 1,
+        scale: 0.8,
+        opacity: 0,
+        ease: 'back.out(1.7)',
+        delay: 0.5
+    });
+
+    gsap.from('.hero-buttons .btn', {
+        duration: 0.8,
+        y: 30,
+        opacity: 0,
+        stagger: 0.2,
+        ease: 'power2.out',
+        delay: 1.2
+    });
+
+    gsap.from('.hero-image', {
+        duration: 1,
+        x: 100,
+        opacity: 0,
+        ease: 'power3.out',
+        delay: 0.8
+    });
+
+    // スキルカードのアニメーション
+    gsap.from('.skill-card', {
+        scrollTrigger: {
+            trigger: '.skills-grid',
+            start: 'top 80%',
+            toggleActions: 'play none none reverse'
+        },
+        duration: 0.6,
+        y: 50,
+        opacity: 0,
+        stagger: 0.1,
+        ease: 'power2.out'
+    });
+
+    // タイムラインアイテムのアニメーション
+    gsap.from('.timeline-item', {
+        scrollTrigger: {
+            trigger: '.timeline',
+            start: 'top 80%',
+            toggleActions: 'play none none reverse'
+        },
+        duration: 0.8,
+        x: -100,
+        opacity: 0,
+        stagger: 0.2,
+        ease: 'power3.out'
+    });
+
+    // AtCoderカードのアニメーション
+    gsap.from('.atcoder-card', {
+        scrollTrigger: {
+            trigger: '.atcoder-cards',
+            start: 'top 80%',
+            toggleActions: 'play none none reverse'
+        },
+        duration: 1,
+        scale: 0.8,
+        opacity: 0,
+        stagger: 0.3,
+        ease: 'elastic.out(1, 0.5)',
+        clearProps: 'all'
+    });
+
+    // 目標カードのアニメーション
+    gsap.from('.goal-card', {
+        scrollTrigger: {
+            trigger: '.atcoder-goals',
+            start: 'top 80%',
+            toggleActions: 'play none none reverse'
+        },
+        duration: 0.8,
+        y: 60,
+        opacity: 0,
+        stagger: 0.2,
+        ease: 'power3.out'
+    });
+
+    // セクションタイトルのアニメーション
+    gsap.utils.toArray('.section-title').forEach((title, index) => {
+        gsap.from(title, {
+            scrollTrigger: {
+                trigger: title,
+                start: 'top 85%',
+                toggleActions: 'play none none reverse'
+            },
+            duration: 1,
+            x: index % 2 === 0 ? -100 : 100,
+            opacity: 0,
+            ease: 'power3.out'
+        });
+    });
+
+    // セクションサブタイトルのアニメーション
+    gsap.utils.toArray('.section-subtitle').forEach(subtitle => {
+        gsap.from(subtitle, {
+            scrollTrigger: {
+                trigger: subtitle,
+                start: 'top 85%',
+                toggleActions: 'play none none reverse'
+            },
+            duration: 0.8,
+            y: 30,
+            opacity: 0,
+            ease: 'power2.out'
+        });
+    });
+
+    // 統計数字のカウントアップアニメーション（GSAP版）
+    gsap.utils.toArray('.stat-number').forEach(stat => {
+        const text = stat.textContent;
+        const number = parseInt(text.replace(/\D/g, ''));
+        const suffix = text.replace(/\d/g, '');
+        
+        ScrollTrigger.create({
+            trigger: stat,
+            start: 'top 85%',
+            onEnter: () => {
+                gsap.to(stat, {
+                    duration: 2,
+                    innerHTML: number,
+                    snap: { innerHTML: 1 },
+                    ease: 'power2.out',
+                    onUpdate: function() {
+                        stat.textContent = Math.floor(this.targets()[0].innerHTML) + suffix;
+                    }
+                });
+            },
+            once: true
+        });
+    });
+
+    // ナビゲーションバーの背景色変更（スクロール時）
+    ScrollTrigger.create({
+        start: 'top -100',
+        end: 99999,
+        toggleClass: {
+            className: 'scrolled',
+            targets: '.navbar'
+        }
+    });
+
+    // パララックス効果（ヒーロー画像）
+    gsap.to('.hero-image', {
+        scrollTrigger: {
+            trigger: '.hero',
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 1
+        },
+        y: 100,
+        ease: 'none'
+    });
+}
+
 // タイピングエフェクト
 function initializeTypingEffect() {
-    const heroSubtitle = document.querySelector('.hero-subtitle');
-    if (heroSubtitle) {
-        const originalText = heroSubtitle.textContent;
-        heroSubtitle.textContent = '';
-
-        setTimeout(() => {
-            typeText(heroSubtitle, originalText, 100);
-        }, 1000);
+    const typedElement = document.getElementById('typed-text');
+    if (typedElement && typeof Typed !== 'undefined') {
+        const typed = new Typed('#typed-text', {
+            strings: [
+                '気になることに、躊躇せず行動する！💪',
+                '好きこそものの上手なれ！✨',
+                '競技プログラミングで日々成長中！🚀',
+                '技術で人を楽しませたい！🎮'
+            ],
+            typeSpeed: 50,           // タイピング速度を少し速く
+            backSpeed: 25,           // 削除速度を速く
+            backDelay: 2500,         // 表示時間を少し長く
+            startDelay: 800,         // 開始ディレイを長めに
+            loop: true,
+            showCursor: true,
+            cursorChar: '▮',
+            autoInsertCss: true,
+            // スマートバックスペース：共通部分は削除しない
+            smartBackspace: false,
+            // フェードアウト効果
+            fadeOut: false,
+            fadeOutDelay: 500
+        });
+    } else {
+        // Typed.jsが読み込まれていない場合は既存の処理にフォールバック
+        const heroSubtitle = document.querySelector('.hero-subtitle');
+        if (heroSubtitle) {
+            const originalText = '気になることに、躊躇せず行動する！ | 好きこそものの上手なれ！';
+            heroSubtitle.textContent = '';
+            setTimeout(() => {
+                typeText(heroSubtitle, originalText, 100);
+            }, 1000);
+        }
     }
 }
 
