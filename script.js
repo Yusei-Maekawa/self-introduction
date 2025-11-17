@@ -723,6 +723,9 @@ function initializeAtCoderSection() {
     });
     
     atcoderCards.forEach(card => cardObserver.observe(card));
+
+    // Goals initialization
+    initializeAtCoderGoals();
 }
 
 // AtCoderのデータを取得する関数
@@ -933,8 +936,51 @@ function displayAtCoderData(atcoderData) {
             // data属性を更新
             ratingElement.setAttribute('data-rating', targetRating);
             
+            // Ensure initial position is not shifted (clear classes) so animation starts centered
+            const ratingAndParticipationContainer = ratingCircle.closest('.rating-and-participation');
+            if (ratingAndParticipationContainer) {
+                ratingAndParticipationContainer.classList.remove('shift-left');
+                ratingAndParticipationContainer.classList.remove('show-participation');
+            }
+
             // レーティングのカウントアップアニメーション（灰→茶→緑→水...と色を変えながら）
-                animateRatingWithColorTransition(ratingElement, ratingCircle, targetRating, targetRating);
+            // アニメーション完了後にレート円を左へスライドし、参加回数を表示する
+            const contests = data.contests || 0;
+            animateRatingWithColorTransition(ratingElement, ratingCircle, targetRating, targetRating)
+                .then(() => {
+                    try {
+                        const container = ratingCircle.closest('.rating-and-participation');
+                        if (container) {
+                            // 左へスライド
+                            container.classList.add('shift-left');
+
+                            // 参加回数をセットしてフェードイン
+                            const participationEl = container.querySelector('.participation-count');
+                            if (participationEl) {
+                                participationEl.setAttribute('data-participation', contests);
+                                participationEl.textContent = String(contests);
+                            }
+
+                            // show with a short delay so the slide feels natural
+                            setTimeout(() => {
+                                container.classList.add('show-participation');
+
+                                // pop animation for the count (small scale + fade)
+                                const participationCount = container.querySelector('.participation-count');
+                                if (participationCount) {
+                                    // ensure hidden -> then pop
+                                    participationCount.classList.remove('pop');
+                                    // trigger in next tick so animation runs
+                                    setTimeout(() => participationCount.classList.add('pop'), 20);
+                                    // remove pop class after animation so it can replay on reload
+                                    setTimeout(() => participationCount.classList.remove('pop'), 800);
+                                }
+                            }, 220);
+                        }
+                    } catch (e) {
+                        console.warn('Post-rating shift/show participation error', e);
+                    }
+                });
             
             // 最高レート表示（円形・RATINGと同じ形式）
             const highestStat = card.querySelector('[data-stat="highest"]');
@@ -951,8 +997,108 @@ function displayAtCoderData(atcoderData) {
                 performanceStat.setAttribute('data-rating', data.highestPerformance);
                 animateRatingWithColorTransition(performanceStat, performanceCircle, data.highestPerformance);
             }
+            // Update goals tiles and progress for each contest type
+            try {
+                updateGoalTiles(card, data.rating);
+                updateGoalProgress(atcoderData);
+            } catch (e) {
+                console.warn('Goal tile/progress update error', e);
+            }
         }
     });
+}
+
+// 初期化: 目標タイルとクリックでの展開を設定
+function initializeAtCoderGoals() {
+    console.log('🎯 Initializing AtCoder goals...');
+    const goalCards = document.querySelectorAll('.goal-card');
+    console.log('Found goal cards:', goalCards.length);
+    goalCards.forEach(card => {
+        const header = card.querySelector('.goal-header');
+        // open/close on click and keyboard
+        const toggle = () => {
+            const expanded = card.classList.toggle('expanded');
+            card.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        };
+
+        card.addEventListener('click', toggle);
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggle();
+            }
+        });
+
+        // Render default tiles from data-target attr (target rating value)
+        const tilesEl = card.querySelector('.goal-tiles');
+        const targetRating = parseInt(tilesEl.getAttribute('data-target')) || 0;
+        tilesEl.innerHTML = '';
+        const stack = document.createElement('div');
+        stack.className = 'tile-stack';
+        // tiles to show are within-color tiles: 1..4 per 100 score
+        const within = Math.floor((targetRating % 400) / 100) + 1;
+        for (let i = 0; i < within; i++) {
+            const t = document.createElement('div');
+            t.className = 'tile';
+            t.textContent = '^';
+            stack.appendChild(t);
+        }
+        tilesEl.appendChild(stack);
+    });
+}
+
+// Update goal tiles based on the given rating (to show current tiles)
+function updateGoalTiles(card, rating) {
+    const tilesEl = card.querySelector('.goal-tiles');
+    if (!tilesEl) return;
+    const target = parseInt(tilesEl.getAttribute('data-target')) || 0;
+    tilesEl.innerHTML = '';
+
+    const curStack = document.createElement('div');
+    curStack.className = 'tile-stack';
+    const withinCur = Math.floor((rating % 400) / 100) + 1;
+    for (let i = 0; i < withinCur; i++) {
+        const t = document.createElement('div');
+        t.className = 'tile';
+        // color tile by rating color
+        const colorInfo = RATING_COLORS.find(c => rating >= c.min && rating <= c.max) || RATING_COLORS[0];
+        t.style.color = colorInfo.color;
+        t.textContent = '^';
+        curStack.appendChild(t);
+    }
+    // show target tiles faintly next to current tile
+    const targetStack = document.createElement('div');
+    targetStack.className = 'tile-stack';
+    const withinTarget = Math.floor((target % 400) / 100) + 1;
+    for (let i = 0; i < withinTarget; i++) {
+        const t = document.createElement('div');
+        t.className = 'tile';
+        t.style.opacity = '0.28';
+        const colorInfo = RATING_COLORS.find(c => target >= c.min && target <= c.max) || RATING_COLORS[0];
+        t.style.color = colorInfo.color;
+        t.textContent = '^';
+        targetStack.appendChild(t);
+    }
+
+    tilesEl.appendChild(curStack);
+    tilesEl.appendChild(targetStack);
+
+    // Also update progress bar for nearest target in the card
+    const targetVal = parseInt(tilesEl.getAttribute('data-target')) || 0;
+    const progressBar = card.querySelector('.goal-progress-fill');
+    if (progressBar && targetVal > 0) {
+        const percent = Math.floor((Math.min(rating, targetVal) / targetVal) * 100);
+        progressBar.style.width = `${percent}%`;
+    }
+}
+
+// Update goal progress: show current rating and contest counts
+function updateGoalProgress(atcoderData) {
+    const el = document.getElementById('goal-progress');
+    if (!el) return;
+    const algo = atcoderData.algo;
+    const heur = atcoderData.heuristic;
+    el.innerHTML = `アルゴリズム：現在 ${algo.rating} (${algo.contests} 回参加)　／　ヒューリスティック：現在 ${heur.rating} (${heur.contests} 回参加)`;
 }
 
 // レーティングを色遷移付きでアニメーションする関数
@@ -969,10 +1115,11 @@ const RATING_COLORS = [
 ];
 
 function animateRatingWithColorTransition(ratingElement, ratingCircle, targetRating) {
-    const duration = 3000; // 3秒
-    const fps = 120;
-    const totalFrames = Math.floor(duration / (1000 / fps));
-    let currentFrame = 0;
+    return new Promise((resolve) => {
+        const duration = 3000; // 3秒
+        const fps = 120;
+        const totalFrames = Math.floor(duration / (1000 / fps));
+        let currentFrame = 0;
     
     // 円グラフ用のSVG要素を作成
     let progressCircle = ratingCircle.querySelector('.rating-progress-circle');
@@ -997,6 +1144,22 @@ function animateRatingWithColorTransition(ratingElement, ratingCircle, targetRat
     const easeOutCubic = (t) => {
         return 1 - Math.pow(1 - t, 3);
     };
+
+    // ヘルパー: 16進カラーから相対輝度を計算して、最適なテキスト色('#000' or '#fff')を返す
+    function getContrastTextColor(hex) {
+        if (!hex) return '#fff';
+        // normalize
+        const h = hex.replace('#', '');
+        const bigint = parseInt(h.length === 3 ? h.split('').map(c => c + c).join('') : h, 16);
+        const r = (bigint >> 16) & 255;
+        const g = (bigint >> 8) & 255;
+        const b = bigint & 255;
+        // sRGB -> linear
+        const srgb = [r, g, b].map(v => v / 255).map(v => v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4));
+        const lum = 0.2126 * srgb[0] + 0.7152 * srgb[1] + 0.0722 * srgb[2];
+        // WCAG threshold ~0.179 => choose black for light backgrounds
+        return lum > 0.179 ? '#000' : '#fff';
+    }
     
     const totalLayersTarget = Math.max(1, Math.ceil(targetRating / 400));
     const targetHasPartial = (targetRating % 400) !== 0;
@@ -1009,6 +1172,37 @@ function animateRatingWithColorTransition(ratingElement, ratingCircle, targetRat
         
         // レーティング値を更新
         ratingElement.textContent = currentRating;
+        // 現在値に応じてテキストの色を調整（背景色に溶けないようコントラストを確保）
+        try {
+            const currentColorInfo = RATING_COLORS.find(c => currentRating >= c.min && currentRating <= c.max) || RATING_COLORS[0];
+            if (currentColorInfo) {
+                // テキストをレート色にして強調
+                ratingElement.style.color = currentColorInfo.color;
+                ratingElement.style.fontWeight = '800';
+
+                // クラスの同期（既存のrating-クラスをクリアして追加）
+                RATING_COLORS.forEach(cl => ratingElement.classList.remove(cl.class));
+                ratingElement.classList.add(currentColorInfo.class);
+
+                // 輝度に応じてアウトライン／シャドウ色を選ぶ
+                const h = currentColorInfo.color.replace('#', '');
+                const bigint = parseInt(h.length === 3 ? h.split('').map(c => c + c).join('') : h, 16);
+                const r = (bigint >> 16) & 255;
+                const g = (bigint >> 8) & 255;
+                const b = bigint & 255;
+                const srgb = [r, g, b].map(v => v / 255).map(v => v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4));
+                const lum = 0.2126 * srgb[0] + 0.7152 * srgb[1] + 0.0722 * srgb[2];
+
+                const outlineColor = lum > 0.5 ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.85)';
+                // WebKit系のテキストアウトライン（幅は見た目に合わせて調整）
+                ratingElement.style.webkitTextStroke = '0.8px ' + outlineColor;
+                // テキストシャドウも付与して視認性を更に強化
+                ratingElement.style.textShadow = lum > 0.5 ? '2px 2px 6px rgba(0,0,0,0.45)' : '1px 1px 4px rgba(0,0,0,0.25)';
+            }
+        } catch (e) {
+            // 保守: エラーが出てもアニメーション自体は継続
+            console.warn('Color emphasis calc error', e);
+        }
         
         // 円グラフを描画（レート400 = 1回転）
         // 最後の色（target層）が部分的な場合は、その層で1周する演出を行うため
@@ -1041,8 +1235,32 @@ function animateRatingWithColorTransition(ratingElement, ratingCircle, targetRat
             
             // ツールチップを設定
             ratingElement.setAttribute('title', `${finalColorInfo.name}コーダー (${targetRating})`);
+            // 最終状態でも色強調を適用
+            try {
+                ratingElement.style.color = finalColorInfo.color;
+                ratingElement.style.fontWeight = '800';
+                RATING_COLORS.forEach(cl => ratingElement.classList.remove(cl.class));
+                ratingElement.classList.add(finalColorInfo.class);
+                const h2 = finalColorInfo.color.replace('#', '');
+                const bigint2 = parseInt(h2.length === 3 ? h2.split('').map(c => c + c).join('') : h2, 16);
+                const rr = (bigint2 >> 16) & 255;
+                const gg = (bigint2 >> 8) & 255;
+                const bb = bigint2 & 255;
+                const srgb2 = [rr, gg, bb].map(v => v / 255).map(v => v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4));
+                const lum2 = 0.2126 * srgb2[0] + 0.7152 * srgb2[1] + 0.0722 * srgb2[2];
+                const outlineColor2 = lum2 > 0.5 ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.85)';
+                ratingElement.style.webkitTextStroke = '0.8px ' + outlineColor2;
+                ratingElement.style.textShadow = lum2 > 0.5 ? '2px 2px 6px rgba(0,0,0,0.45)' : '1px 1px 4px rgba(0,0,0,0.25)';
+            } catch (e) {
+                console.warn('Final color emphasis calc error', e);
+            }
+
+            // resolve Promise to indicate animation completion
+            try { resolve(); } catch (e) { /* ignore */ }
         }
     }, 1000 / fps);
+    // end of promise
+});
 }
 
 // 円グラフを描画する関数（レート400 = 360度）
@@ -1276,6 +1494,19 @@ function reloadAtCoderData() {
         circle.classList.add('rating-gray');
         circle.style.background = 'linear-gradient(135deg, #808080, #808080dd)';
         circle.style.boxShadow = '0 10px 30px #80808066';
+    });
+
+    // リセット: shift/show-participation を外す (再読み込みで再アニメ可)
+    const ratingContainers = document.querySelectorAll('.rating-and-participation');
+    ratingContainers.forEach(container => {
+        container.classList.remove('shift-left');
+        container.classList.remove('show-participation');
+        const pCount = container.querySelector('.participation-count');
+        if (pCount) {
+            pCount.setAttribute('data-participation', '0');
+            pCount.textContent = '0';
+            pCount.classList.remove('pop');
+        }
     });
     
     // データを再取得

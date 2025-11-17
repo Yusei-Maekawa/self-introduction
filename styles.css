@@ -1219,6 +1219,94 @@ body {
     animation: float 3s ease-in-out infinite;
 }
 
+/* 新: レートと参加回数を横並びで表示するコンテナ */
+.rating-and-participation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+}
+
+.rating-and-participation .rating-shift-wrapper {
+    display: inline-block; /* separate transform layer */
+    margin: 0; /* wrapper controls spacing */
+    transition: transform 0.6s cubic-bezier(0.2, 0.9, 0.2, 1), box-shadow 0.3s ease;
+}
+.rating-and-participation .rating-shift-wrapper .atcoder-rating-circle {
+    margin: 0; /* keep circle centered inside wrapper */
+}
+
+/* 参加回数表示 (初期は非表示) */
+.participation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    opacity: 0;
+    transform: translateX(8px) scale(0.98);
+    transition: opacity 0.45s cubic-bezier(0.2, 0.9, 0.2, 1), transform 0.45s cubic-bezier(0.2, 0.9, 0.2, 1);
+    min-width: 80px;
+}
+
+.participation-count {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.participation-label {
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+/* レート円を左へスライドさせるクラス */
+.rating-and-participation.shift-left .rating-shift-wrapper {
+    transform: translateX(-60px) scale(0.98);
+}
+
+/* 参加回数を表示するクラス */
+.rating-and-participation.show-participation .participation {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+}
+
+/* 参加回数のポップインアニメーション */
+@keyframes popIn {
+    0% {
+        transform: scale(0.6);
+        opacity: 0;
+        filter: blur(2px);
+    }
+    70% {
+        transform: scale(1.08);
+        opacity: 1;
+        filter: blur(0);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+        filter: none;
+    }
+}
+
+.participation-count.pop {
+    animation: popIn 520ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+    transform-origin: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+/* モバイルでは縦並びに戻す（視認性を確保） */
+@media (max-width: 768px) {
+    .rating-and-participation {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .rating-and-participation.shift-left .atcoder-rating-circle {
+        transform: translateX(0) scale(1);
+    }
+}
+
 .rating-progress-circle {
     position: absolute;
     top: 0;
@@ -1275,6 +1363,67 @@ body {
     border-top: 1px solid var(--border-color);
     border-bottom: 1px solid var(--border-color);
 }
+
+/* 目標セクションスタイル */
+.atcoder-goals {
+    display: block !important;
+    margin-top: 2rem;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+
+.goals-title {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+.goals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+}
+
+.goal-card {
+    display: block !important;
+    border-radius: 10px;
+    padding: 1rem;
+    background: linear-gradient(135deg, #ffffff, #fafafa);
+    cursor: pointer;
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+    border: 1px solid var(--border-color);
+}
+
+.goal-card:focus, .goal-card:hover { box-shadow: 0 10px 30px rgba(0,0,0,0.08); transform: translateY(-3px); }
+
+.goal-header { display:flex; justify-content:space-between; align-items:center; gap:0.5rem; }
+.goal-header h4 { margin:0; color:var(--primary-color); }
+
+.goal-tiles { display:flex; gap:4px; align-items:center; justify-content:flex-end; min-width:40px }
+
+/* 瓦 (tile) マークスタイル */
+.tile { font-family: monospace; font-size: 14px; transform-origin: bottom center; }
+.tile-stack { display:flex; flex-direction:column-reverse; align-items:center; gap: 2px; }
+
+.goal-details { display:none; margin-top: 0.75rem; color: var(--text-light); font-size: 0.95rem; }
+.goal-card.expanded .goal-details { display:block; }
+.goal-details h5 { font-size:1.1rem; color:var(--primary-color); margin:0 0 0.5rem 0; }
+.goal-details h6 { font-size:1rem; color:var(--secondary-color); margin:0.75rem 0 0.4rem 0; font-weight:600; }
+.goal-details ul { margin:0.5rem 0 0.75rem 1.2rem; line-height:1.7; }
+.goal-details li strong { color:var(--primary-color); }
+.goal-details .goal-note { font-size:0.88rem; color:#666; font-style:italic; margin-top:0.75rem; }
+
+/* progress bar inside each goal card */
+.goal-progressbar { margin-top: 0.6rem; }
+.goal-progress-label { font-size: 0.8rem; color: var(--text-light); margin-bottom: 6px; }
+.goal-progress-track { width: 100%; height: 10px; background: #eee; border-radius: 8px; overflow: hidden; }
+.goal-progress-fill { width: 0%; height: 100%; background: linear-gradient(90deg,var(--secondary-color), #667eea); box-shadow: inset 0 -2px 6px rgba(0,0,0,0.06); transition: width 0.8s cubic-bezier(0.24, 1, 0.33, 1); }
+
+.goal-progress-updates { margin-top: 1rem; }
+
+.goal-progress { color: var(--primary-color); background: linear-gradient(135deg,#eef8ff,#f9fcff); padding:0.8rem; border-radius:8px; font-size:0.95rem }
 
 /* 統計用の円形表示（最高レート・最高パフォーマンス） */
 .atcoder-stats .atcoder-rating-circle {

@@ -373,9 +373,17 @@
                             <i class="fas fa-code"></i>
                             <h3>アルゴリズム部門</h3>
                         </div>
-                        <div class="atcoder-rating-circle">
-                            <div class="rating-value" data-rating="0">0</div>
-                            <div class="rating-label">Rating</div>
+                        <div class="rating-and-participation">
+                            <div class="rating-shift-wrapper">
+                                <div class="atcoder-rating-circle">
+                                <div class="rating-value" data-rating="0">0</div>
+                                <div class="rating-label">Rating</div>
+                                </div>
+                            </div>
+                            <div class="participation" aria-hidden="true">
+                                <div class="participation-count" data-participation="0">0</div>
+                                <div class="participation-label">参加回数</div>
+                            </div>
                         </div>
                         <div class="atcoder-stats">
                             <div class="atcoder-rating-circle" data-stat-circle="highest">
@@ -397,9 +405,17 @@
                             <i class="fas fa-brain"></i>
                             <h3>ヒューリスティック部門</h3>
                         </div>
-                        <div class="atcoder-rating-circle">
-                            <div class="rating-value" data-rating="0">0</div>
-                            <div class="rating-label">Rating</div>
+                        <div class="rating-and-participation">
+                            <div class="rating-shift-wrapper">
+                                <div class="atcoder-rating-circle">
+                                <div class="rating-value" data-rating="0">0</div>
+                                <div class="rating-label">Rating</div>
+                                </div>
+                            </div>
+                            <div class="participation" aria-hidden="true">
+                                <div class="participation-count" data-participation="0">0</div>
+                                <div class="participation-label">参加回数</div>
+                            </div>
                         </div>
                         <div class="atcoder-stats">
                             <div class="atcoder-rating-circle" data-stat-circle="highest">
@@ -419,6 +435,57 @@
                            class="atcoder-link contest-log-link">
                             <i class="fas fa-book"></i> 参加記
                         </a>
+                    </div>
+                </div>
+                <!-- 目標セクション: アルゴリズム / ヒューリスティック -->
+                <div class="atcoder-goals">
+                    <h3 class="goals-title">今後の目標</h3>
+                    <div class="goals-grid">
+                        <div class="goal-card" data-contest-type="algo" tabindex="0" role="button" aria-expanded="false">
+                            <div class="goal-header">
+                                <h4>アルゴリズム部門</h4>
+                                <div class="goal-tiles" aria-hidden="true" data-target="600"></div>
+                            </div>
+                            <div class="goal-progressbar" aria-hidden="true">
+                                <div class="goal-progress-label">目標までの達成度</div>
+                                <div class="goal-progress-track"><div class="goal-progress-fill" style="width:0%"></div></div>
+                            </div>
+                            <div class="goal-details">
+                                <h5>AtCoder における成長目標</h5>
+                                <p>私は競技プログラミングで継続的に成長することを重視しています。短期・中期・長期の目標を定め、計画的に問題演習とコンテスト参加を続けます。</p>
+                                <h6>アルゴリズム部門</h6>
+                                <ul>
+                                    <li><strong>目標1:</strong> 2026年3月までに レート600（茶瓦2）</li>
+                                    <li><strong>目標2:</strong> 卒業まで（2027年3月）に レート1200（水色瓦1）</li>
+                                </ul>
+                                <p class="goal-note">定期的な進捗更新（現在のレート・最近のコンテスト結果）を載せ、達成度を可視化します。</p>
+                            </div>
+                        </div>
+
+                        <div class="goal-card" data-contest-type="heuristic" tabindex="0" role="button" aria-expanded="false">
+                            <div class="goal-header">
+                                <h4>ヒューリスティック部門</h4>
+                                <div class="goal-tiles" aria-hidden="true" data-target="1600"></div>
+                            </div>
+                            <div class="goal-progressbar" aria-hidden="true">
+                                <div class="goal-progress-label">目標までの達成度</div>
+                                <div class="goal-progress-track"><div class="goal-progress-fill" style="width:0%"></div></div>
+                            </div>
+                            <div class="goal-details">
+                                <h5>AtCoder における成長目標</h5>
+                                <p>私は競技プログラミングで継続的に成長することを重視しています。短期・中期・長期の目標を定め、計画的に問題演習とコンテスト参加を続けます。</p>
+                                <h6>ヒューリスティック部門</h6>
+                                <ul>
+                                    <li><strong>目標1:</strong> 2026年6月までに レート1600（青瓦1）</li>
+                                    <li><strong>目標2:</strong> 卒業まで（2027年3月）に レート2000（黄色瓦1）</li>
+                                </ul>
+                                <p class="goal-note">定期的な進捗更新（現在のレート・最近のコンテスト結果）を載せ、達成度を可視化します。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="goal-progress-updates">
+                        <h4>進捗の更新</h4>
+                        <div class="goal-progress" id="goal-progress">現在のレート・最近のコンテスト結果はここに表示されます。</div>
                     </div>
                 </div>
                 <div class="atcoder-note">
