@@ -1,3 +1,242 @@
+/**
+ * script.js
+ *
+ * ============================================================================
+ * 📖 ファイル概要 / File Overview
+ * ============================================================================
+ *
+ * 【日本語】
+ * ポートフォリオサイトのメインJavaScriptファイル。
+ * ページ初期化、アニメーション、AtCoderデータ取得・表示、
+ * ユーザーインタラクション処理を担当します。
+ *
+ * 【主な機能】
+ * 1. スプラッシュスクリーン制御(表示・スキップ処理)
+ * 2. ナビゲーションバー(ハンバーガーメニュー、スクロール時透明度変更)
+ * 3. スムーススクロール
+ * 4. スクロールアニメーション(IntersectionObserver使用)
+ * 5. AtCoderレーティング取得・表示(JSON/API)
+ * 6. レーティング円グラフアニメーション(SVG、12時起点右回転)
+ * 7. お問い合わせフォーム(バリデーション、通知)
+ * 8. タイピングエフェクト
+ * 9. ページトップボタン
+ *
+ * 【English】
+ * Main JavaScript file for the portfolio site.
+ * Handles page initialization, animations, AtCoder data fetching/display,
+ * and user interaction processing.
+ *
+ * 【Key Features】
+ * 1. Splash screen control (display and skip handling)
+ * 2. Navigation bar (hamburger menu, scroll opacity change)
+ * 3. Smooth scrolling
+ * 4. Scroll animations (using IntersectionObserver)
+ * 5. AtCoder rating fetching and display (JSON/API)
+ * 6. Rating circle graph animation (SVG, 12 o'clock start, clockwise)
+ * 7. Contact form (validation, notifications)
+ * 8. Typing effect
+ * 9. Scroll-to-top button
+ *
+ * ============================================================================
+ * 🎯 グローバル変数 / Global Variables
+ * ============================================================================
+ *
+ * RATING_COLORS: Array<{min, max, color, name, class}>
+ * - 日本語: AtCoderレーティング色境界定義(400点ごと)
+ * - English: AtCoder rating color boundary definitions (every 400 points)
+ * - 0-399: 灰色(gray), 400-799: 茶色(brown), 800-1199: 緑(green),
+ *   1200-1599: 水色(cyan), 1600-1999: 青(blue), 2000-2399: 黄(yellow),
+ *   2400-2799: 橙(orange), 2800+: 赤(red)
+ *
+ * ============================================================================
+ * 🔧 主要関数 / Main Functions
+ * ============================================================================
+ *
+ * ◆ ページ初期化 / Page Initialization
+ * ────────────────────────────────────────────────────────────────────────────
+ *
+ * 1. DOMContentLoaded イベントリスナー
+ *    - 日本語: ページ読み込み時に基本機能を初期化
+ *    - English: Initialize basic features on page load
+ *    - 呼び出し: initializeSplashScreen(), initializeNavigation(), etc.
+ *
+ * 2. initializeSplashScreen()
+ *    - 日本語: スプラッシュスクリーン表示・非表示制御
+ *    - English: Control splash screen display and hide
+ *    - タイミング: 2.5秒後にグローエフェクト → 1秒後フェードアウト
+ *    - スキップ: クリック or Enterキー
+ *
+ * 3. initializeMainContentFeatures()
+ *    - 日本語: メインコンテンツの機能を初期化
+ *    - English: Initialize main content features
+ *    - 呼び出し: initializeScrollAnimations(), initializeAtCoderSection(), etc.
+ *
+ * ◆ ナビゲーション / Navigation
+ * ────────────────────────────────────────────────────────────────────────────
+ *
+ * 4. initializeNavigation()
+ *    - 日本語: ナビゲーションバー制御(ハンバーガーメニュー、スクロール時透明度)
+ *    - English: Navigation bar control (hamburger menu, scroll opacity)
+ *
+ * 5. initializeSmoothScrolling()
+ *    - 日本語: スムーススクロール機能
+ *    - English: Smooth scrolling feature
+ *    - 対象: .nav-link, .hero-buttons .btn
+ *
+ * ◆ アニメーション / Animations
+ * ────────────────────────────────────────────────────────────────────────────
+ *
+ * 6. initializeScrollAnimations()
+ *    - 日本語: スクロールアニメーション設定(IntersectionObserver)
+ *    - English: Set up scroll animations (IntersectionObserver)
+ *    - 対象: .skill-card, .timeline-item, .contact-item, etc.
+ *
+ * 7. animateStatNumber(element: HTMLElement)
+ *    - 日本語: 数値統計のカウントアップアニメーション
+ *    - English: Count-up animation for numeric statistics
+ *    - 使用: .stat-number要素
+ *
+ * 8. initializeTypingEffect()
+ *    - 日本語: ヒーローセクションのタイピングエフェクト
+ *    - English: Typing effect for hero section
+ *    - 使用: typeText(element, text, speed)
+ *
+ * 9. typeText(element: HTMLElement, text: string, speed: number)
+ *    - 日本語: タイプライター実装
+ *    - English: Typewriter implementation
+ *
+ * ◆ AtCoder関連 / AtCoder Related
+ * ────────────────────────────────────────────────────────────────────────────
+ *
+ * 10. initializeAtCoderSection()
+ *     - 日本語: AtCoderセクション初期化、スクロールで表示時にアニメーション開始
+ *     - English: Initialize AtCoder section, start animation when scrolled into view
+ *     - IntersectionObserver使用、初回のみ実行
+ *
+ * 11. fetchAtCoderData()
+ *     - 日本語: AtCoderレーティングデータ取得(優先順位: ローカルJSON → API)
+ *     - English: Fetch AtCoder rating data (priority: local JSON → API)
+ *     - データソース: data/atcoder-rating.json, AtCoder API
+ *
+ * 12. parseRatingHistory(ratingHistory: Array): Object
+ *     - 日本語: レーティング履歴を解析(アルゴリズム/ヒューリスティック分離)
+ *     - English: Parse rating history (separate algorithm/heuristic)
+ *
+ * 13. updateLastUpdateTime(apiSuccess: boolean, lastUpdated?: string)
+ *     - 日本語: 最終更新時刻表示更新
+ *     - English: Update last update time display
+ *
+ * 14. displayAtCoderData(atcoderData: Object)
+ *     - 日本語: AtCoderデータをDOMに表示、アニメーション開始
+ *     - English: Display AtCoder data in DOM and start animations
+ *     - 呼び出し: animateRatingWithColorTransition()
+ *
+ * 15. animateRatingWithColorTransition(ratingElement, ratingCircle, targetRating)
+ *     - 日本語: レーティング値のカウントアップ＋色遷移＋SVG円グラフアニメーション
+ *     - English: Rating value count-up + color transition + SVG circle graph animation
+ *     - アニメーション: 2.5秒、120fps、easeOutCubic
+ *     - 呼び出し: drawRatingProgress()
+ *
+ * 16. drawRatingProgress(svg, rating, rotationProgressForTop, totalLayersTarget)
+ *     - 日本語: SVG円グラフ描画(400点=360度、12時起点右回転)
+ *     - English: Draw SVG circle graph (400 points = 360deg, 12 o'clock start, clockwise)
+ *     - 各レイヤー: 扇形(pie slice)で描画
+ *     - 最上層: 回転アニメーション適用
+ *
+ * 17. createPieSlicePath(cx, cy, r, startAngleDeg, sweepDeg, color)
+ *     - 日本語: 扇形SVGパス生成(12時起点)
+ *     - English: Generate pie slice SVG path (12 o'clock origin)
+ *     - 戻り値: SVG path要素 or circle要素
+ *
+ * 18. drawArcSegment(svg, centerX, centerY, startAngle, sweepAngle, color, strokeWidth)
+ *     - 日本語: 円弧セグメント描画(旧バージョン用ヘルパー)
+ *     - English: Draw arc segment (helper for old version)
+ *
+ * 19. reloadAtCoderData()
+ *     - 日本語: AtCoderデータ手動再読み込み
+ *     - English: Manually reload AtCoder data
+ *     - 公開: window.reloadAtCoderData
+ *
+ * ◆ UI・フォーム / UI & Forms
+ * ────────────────────────────────────────────────────────────────────────────
+ *
+ * 20. initializeContactForm()
+ *     - 日本語: お問い合わせフォーム初期化(バリデーション、送信シミュレーション)
+ *     - English: Initialize contact form (validation, send simulation)
+ *
+ * 21. isValidEmail(email: string): boolean
+ *     - 日本語: メールアドレス正規表現バリデーション
+ *     - English: Email regex validation
+ *
+ * 22. showNotification(message: string, type: string)
+ *     - 日本語: フローティング通知表示(success/error/info)
+ *     - English: Show floating notification (success/error/info)
+ *
+ * 23. addScrollToTopButton()
+ *     - 日本語: ページトップボタン追加・表示制御
+ *     - English: Add scroll-to-top button and control visibility
+ *
+ * ◆ ユーティリティ / Utilities
+ * ────────────────────────────────────────────────────────────────────────────
+ *
+ * 24. throttle(func: Function, wait: number)
+ *     - 日本語: 関数実行スロットリング
+ *     - English: Throttle function execution
+ *
+ * 25. initializeThemeToggle()
+ *     - 日本語: テーマ切り替えボタン追加(ダーク/ライト)
+ *     - English: Add theme toggle button (dark/light)
+ *
+ * 26. animateStatValue(element, targetValue)
+ *     - 日本語: 統計値アニメーション表示
+ *     - English: Animate stat value display
+ *
+ * 27. animateValueWithColorTransition(element, targetValue, options)
+ *     - 日本語: 数値を色遷移付きでアニメーション
+ *     - English: Animate value with color transition
+ *
+ * ============================================================================
+ * 🎨 アニメーション仕様 / Animation Specifications
+ * ============================================================================
+ *
+ * SVG円グラフ描画:
+ * - 起点: 12時方向(-90度、SVG transform: rotate(-90deg))
+ * - 回転: 右回り(時計回り)
+ * - 1周: 400点
+ * - レイヤー構造: 各400点ブロックを扇形で重ねる
+ * - 最上層: 部分的な場合は1周回転して12時で終了
+ *
+ * カウントアップ:
+ * - イージング: easeOutCubic
+ * - FPS: 120
+ * - デュレーション: 2.5秒(レーティング)、1.5秒(統計値)
+ *
+ * ============================================================================
+ * 🔗 依存関係 / Dependencies
+ * ============================================================================
+ *
+ * 外部ライブラリ: なし(Vanilla JavaScript)
+ *
+ * DOM要素:
+ * - #splash-screen: スプラッシュスクリーン
+ * - #main-content: メインコンテンツ
+ * - .navbar, .nav-menu, .hamburger: ナビゲーション
+ * - #atcoder: AtCoderセクション
+ * - .atcoder-card[data-contest-type]: AtCoderカード
+ * - .rating-value, .atcoder-rating-circle: レーティング表示
+ *
+ * データソース:
+ * - data/atcoder-rating.json: ローカルJSONデータ
+ * - AtCoder API / kenkoooo API: 外部API
+ *
+ * ============================================================================
+ *
+ * @author Yusei Maekawa (前川 雄世)
+ * @version 1.0.0
+ * @since 2025-11-01
+ * @updated 2025-11-17
+ */
+
 // ページ読み込み時の初期化
 document.addEventListener('DOMContentLoaded', function () {
     initializeSplashScreen();
@@ -445,16 +684,37 @@ links.forEach(link => {
 
 // AtCoderセクションの初期化
 function initializeAtCoderSection() {
-    const atcoderCards = document.querySelectorAll('.atcoder-card');
+    const atcoderSection = document.getElementById('atcoder');
+    if (!atcoderSection) return;
     
-    // スクロールアニメーション
-    const observer = new IntersectionObserver((entries) => {
+    let hasAnimated = false; // アニメーション実行済みフラグ
+    
+    // セクションが表示されたときにアニメーションを開始
+    const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !hasAnimated) {
+                hasAnimated = true;
+                // データを取得してアニメーション開始
+                fetchAtCoderData();
+                sectionObserver.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.3,
+        rootMargin: '0px 0px -100px 0px'
+    });
+    
+    sectionObserver.observe(atcoderSection);
+    
+    // カードのアニメーション
+    const atcoderCards = document.querySelectorAll('.atcoder-card');
+    const cardObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry, index) => {
             if (entry.isIntersecting) {
                 setTimeout(() => {
                     entry.target.classList.add('animate-in');
                 }, index * 200);
-                observer.unobserve(entry.target);
+                cardObserver.unobserve(entry.target);
             }
         });
     }, {
@@ -462,10 +722,7 @@ function initializeAtCoderSection() {
         rootMargin: '0px 0px -50px 0px'
     });
     
-    atcoderCards.forEach(card => observer.observe(card));
-    
-    // AtCoder APIからデータを取得
-    fetchAtCoderData();
+    atcoderCards.forEach(card => cardObserver.observe(card));
 }
 
 // AtCoderのデータを取得する関数
@@ -677,7 +934,7 @@ function displayAtCoderData(atcoderData) {
             ratingElement.setAttribute('data-rating', targetRating);
             
             // レーティングのカウントアップアニメーション（灰→茶→緑→水...と色を変えながら）
-            animateRatingWithColorTransition(ratingElement, ratingCircle, targetRating);
+                animateRatingWithColorTransition(ratingElement, ratingCircle, targetRating, targetRating);
             
             // 最高レート表示（円形・RATINGと同じ形式）
             const highestStat = card.querySelector('[data-stat="highest"]');
@@ -699,7 +956,7 @@ function displayAtCoderData(atcoderData) {
 }
 
 // レーティングを色遷移付きでアニメーションする関数
-// グローバルのレーティング色境界
+// グローバルのレーティング色境界（400点ごとに色が変わる）
 const RATING_COLORS = [
     { min: 0, max: 399, color: '#808080', name: 'グレー', class: 'rating-gray' },
     { min: 400, max: 799, color: '#804000', name: '茶色', class: 'rating-brown' },
@@ -712,45 +969,223 @@ const RATING_COLORS = [
 ];
 
 function animateRatingWithColorTransition(ratingElement, ratingCircle, targetRating) {
-    const duration = 2500; // 2.5秒
-    const steps = 50;
-    const increment = targetRating / steps;
-    const stepDuration = duration / steps;
+    const duration = 3000; // 3秒
+    const fps = 120;
+    const totalFrames = Math.floor(duration / (1000 / fps));
+    let currentFrame = 0;
     
-    let currentRating = 0;
-    let stepCount = 0;
+    // 円グラフ用のSVG要素を作成
+    let progressCircle = ratingCircle.querySelector('.rating-progress-circle');
+    if (!progressCircle) {
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.classList.add('rating-progress-circle');
+        svg.setAttribute('width', '100%');
+        svg.setAttribute('height', '100%');
+        svg.style.position = 'absolute';
+        svg.style.top = '0';
+        svg.style.left = '0';
+        svg.style.transform = 'rotate(0deg)'; // 12時の位置から開始
+        
+        progressCircle = svg;
+        ratingCircle.insertBefore(svg, ratingCircle.firstChild);
+    }
     
-    // ローカルの配列は使わず、グローバルの RATING_COLORS を使用
+    // 既存のパスをクリア
+    progressCircle.innerHTML = '';
     
+    // イージング関数（easeOutCubic）
+    const easeOutCubic = (t) => {
+        return 1 - Math.pow(1 - t, 3);
+    };
+    
+    const totalLayersTarget = Math.max(1, Math.ceil(targetRating / 400));
+    const targetHasPartial = (targetRating % 400) !== 0;
+
     const timer = setInterval(() => {
-        currentRating += increment;
-        stepCount++;
-        
-        // 現在のレーティングに対応する色を取得
-        const colorInfo = RATING_COLORS.find(c => currentRating >= c.min && currentRating <= c.max) || RATING_COLORS[0];
-        
-        // 色クラスを更新
-        ratingCircle.className = 'atcoder-rating-circle';
-        ratingCircle.classList.add(colorInfo.class);
-        ratingCircle.style.background = `linear-gradient(135deg, ${colorInfo.color}, ${colorInfo.color}dd)`;
+        currentFrame++;
+        const progress = currentFrame / totalFrames;
+        const easedProgress = easeOutCubic(progress);
+        const currentRating = Math.floor(targetRating * easedProgress);
         
         // レーティング値を更新
-        if (currentRating >= targetRating) {
+        ratingElement.textContent = currentRating;
+        
+        // 円グラフを描画（レート400 = 1回転）
+        // 最後の色（target層）が部分的な場合は、その層で1周する演出を行うため
+        // 現在表示している層が目標の最終層であれば回転角を適用する
+        const currentLayer = Math.max(1, Math.ceil(currentRating / 400));
+        let rotationProgressForTop = 0;
+        if (targetHasPartial && currentLayer === totalLayersTarget) {
+            rotationProgressForTop = easedProgress; // 0..1 -> 0..360deg
+        }
+        drawRatingProgress(progressCircle, currentRating, rotationProgressForTop, totalLayersTarget);
+        
+        // アニメーション完了
+        if (progress >= 1) {
             ratingElement.textContent = targetRating;
             clearInterval(timer);
             
+            // 最終的な円グラフを描画
+            // 最終描画ではトップ層が部分的であれば必ず1周させる（途中で止まらない）
+            const finalRotation = targetHasPartial ? 1 : 0;
+            drawRatingProgress(progressCircle, targetRating, finalRotation, totalLayersTarget);
+            
+            // 最終的な色を設定
+            const finalColorInfo = RATING_COLORS.find(c => targetRating >= c.min && targetRating <= c.max) || RATING_COLORS[0];
+            
             // 完了時のパルスエフェクト
-            ratingElement.style.transform = 'scale(1.2)';
+            ratingElement.style.transform = 'scale(1.15)';
             setTimeout(() => {
                 ratingElement.style.transform = 'scale(1)';
-            }, 200);
+            }, 300);
             
             // ツールチップを設定
-            ratingElement.setAttribute('title', `${colorInfo.name}コーダー (${targetRating})`);
-        } else {
-            ratingElement.textContent = Math.floor(currentRating);
+            ratingElement.setAttribute('title', `${finalColorInfo.name}コーダー (${targetRating})`);
         }
-    }, stepDuration);
+    }, 1000 / fps);
+}
+
+// 円グラフを描画する関数（レート400 = 360度）
+// drawRatingProgress: filled-circle stacking version
+// svg: SVG element
+// rating: current rating to represent
+// rotationProgressForTop: 0..1, how much the topmost layer has rotated (1 -> full 360deg)
+// totalLayersTarget: total number of layers for the final target (used to determine which layer is topmost)
+function drawRatingProgress(svg, rating, rotationProgressForTop = 0, totalLayersTarget = 1) {
+    // 親要素からサイズを取得してSVGの座標を合わせる
+    const parent = svg.parentElement;
+    const rect = parent.getBoundingClientRect();
+    const size = Math.min(rect.width, rect.height);
+    const center = size / 2;
+    const radius = size / 2 - 10; // 少し内側に描画
+
+    // SVGのviewBoxを設定してスケーラブルに描画
+    svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
+
+    // SVGをクリア
+    svg.innerHTML = '';
+
+    // 背景円（薄いグレー）
+    const bgCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    bgCircle.setAttribute('cx', center);
+    bgCircle.setAttribute('cy', center);
+    bgCircle.setAttribute('r', radius);
+    bgCircle.setAttribute('fill', '#2b2b2b');
+    svg.appendChild(bgCircle);
+
+    // レーティングを400で割った商と余り（ただし最低1層は表示）
+    const fullRotations = Math.floor(rating / 400);
+    const remainder = rating % 400;
+    const layersToShow = Math.max(1, Math.ceil(rating / 400));
+
+    // 描画する各レイヤー（0が最下層）
+    // すべての層で扇形（pie slice）を使い、12時方向から右回転で描画
+    for (let layer = 0; layer < layersToShow; layer++) {
+        const colorInfo = RATING_COLORS[layer] || RATING_COLORS[RATING_COLORS.length - 1];
+
+        // このレイヤーのレート範囲
+        const layerStart = layer * 400;
+        const layerEnd = (layer + 1) * 400;
+        
+        // このレイヤーで描画する角度を計算
+        let sweep = 360; // デフォルトは360度（完全な円）
+        
+        if (rating < layerEnd) {
+            // このレイヤーは部分的
+            const ratingInLayer = rating - layerStart;
+            sweep = (ratingInLayer / 400) * 360;
+        }
+
+        // 最上層かどうか
+        const isTop = (layer === layersToShow - 1) && (layersToShow === totalLayersTarget);
+
+        // グループを作って回転を適用できるようにする
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        
+        // 最上層でかつ回転進捗が指定されている場合は、さらに回転を適用
+        let angle = 0;
+        if (isTop && rotationProgressForTop > 0) {
+            angle = rotationProgressForTop * 360;
+        }
+        if (angle !== 0) {
+            g.setAttribute('transform', `rotate(${angle} ${center} ${center})`);
+        }
+
+        // 扇形（pie slice）で描画（12時方向が起点）
+        const slice = createPieSlicePath(center, center, radius, 0, sweep, colorInfo.color);
+        g.appendChild(slice);
+        svg.appendChild(g);
+    }
+}
+
+// 中心から弧で囲まれた扇形パスを作る（startAngleは0が12時, 時計回り正）
+function createPieSlicePath(cx, cy, r, startAngleDeg, sweepDeg, color) {
+    // sweepDeg may be 0..360
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    if (sweepDeg <= 0) return path;
+
+    if (sweepDeg >= 360) {
+        // full circle as a path
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', cx);
+        circle.setAttribute('cy', cy);
+        circle.setAttribute('r', r);
+        circle.setAttribute('fill', color);
+        return circle;
+    }
+
+    const startRad = (startAngleDeg - 90) * Math.PI / 180; // adjust so 0deg = 12時
+    const endRad = (startAngleDeg + sweepDeg - 90) * Math.PI / 180;
+
+    const x1 = cx + r * Math.cos(startRad);
+    const y1 = cy + r * Math.sin(startRad);
+    const x2 = cx + r * Math.cos(endRad);
+    const y2 = cy + r * Math.sin(endRad);
+
+    const largeArc = sweepDeg > 180 ? 1 : 0;
+
+    const d = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`;
+    path.setAttribute('d', d);
+    path.setAttribute('fill', color);
+    return path;
+}
+
+// 円の一部を描画する関数
+// 円弧（セグメント）を描画する関数
+// startAngle: 開始角度（度）、sweepAngle: 描画する角度幅（度）
+function drawArcSegment(svg, centerX, centerY, startAngle, sweepAngle, color, strokeWidth) {
+    if (sweepAngle <= 0) return;
+
+    // 360度の場合は2つの180度弧に分割して描画（SVGのarcは単一で360度を表現できないため）
+    if (sweepAngle >= 360) {
+        drawArcSegment(svg, centerX, centerY, startAngle, 180, color, strokeWidth);
+        drawArcSegment(svg, centerX, centerY, startAngle + 180, 180, color, strokeWidth);
+        return;
+    }
+
+    const endAngle = startAngle + sweepAngle;
+    const startRad = (startAngle * Math.PI) / 180;
+    const endRad = (endAngle * Math.PI) / 180;
+
+    // 内径（strokeが収まるように少し内側に）
+    const r = centerX - 10;
+
+    const x1 = centerX + r * Math.cos(startRad);
+    const y1 = centerY + r * Math.sin(startRad);
+    const x2 = centerX + r * Math.cos(endRad);
+    const y2 = centerY + r * Math.sin(endRad);
+
+    const largeArc = sweepAngle > 180 ? 1 : 0;
+
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    const d = `M ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2}`;
+
+    path.setAttribute('d', d);
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke', color);
+    path.setAttribute('stroke-width', strokeWidth);
+    path.setAttribute('stroke-linecap', 'round');
+    svg.appendChild(path);
 }
 
 // 統計値をアニメーション表示する関数
@@ -827,9 +1262,21 @@ function reloadAtCoderData() {
         btn.disabled = true;
     }
     
-    // レート表示をリセット
+    // レート表示をリセット（0から始める）
     const ratingValues = document.querySelectorAll('.rating-value');
-    ratingValues.forEach(el => el.textContent = '...');
+    ratingValues.forEach(el => {
+        el.textContent = '0';
+        el.setAttribute('data-rating', '0');
+    });
+    
+    // 円の色もリセット
+    const ratingCircles = document.querySelectorAll('.atcoder-rating-circle');
+    ratingCircles.forEach(circle => {
+        circle.className = 'atcoder-rating-circle';
+        circle.classList.add('rating-gray');
+        circle.style.background = 'linear-gradient(135deg, #808080, #808080dd)';
+        circle.style.boxShadow = '0 10px 30px #80808066';
+    });
     
     // データを再取得
     fetchAtCoderData().finally(() => {
