@@ -41,6 +41,12 @@
  * 📦 外部ライブラリ / External Libraries
  * ============================================================================
  *
+ * - Three.js v0.160.0: 3Dグラフィックスライブラリ
+ *   - WebGLベースの3Dレンダリング
+ *   - パーティクルシステム、ジオメトリ、マテリアル
+ *   - マウス追従、リアルタイムアニメーション
+ *   - CDN: https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js
+ *
  * - GSAP (GreenSock Animation Platform) v3.12.5: プロフェッショナルアニメーションライブラリ
  *   - 高性能タイムラインアニメーション
  *   - ScrollTriggerプラグイン: スクロール連動アニメーション
@@ -102,7 +108,17 @@
  * ◆ アニメーション / Animations
  * ────────────────────────────────────────────────────────────────────────────
  *
- * 6. initializeGSAP()
+ * 6. initializeThreeJS()
+ *    - 日本語: Three.js 3Dパーティクル背景初期化
+ *    - English: Initialize Three.js 3D particle background
+ *    - 機能:
+ *      - 1500個のパーティクル生成（AtCoderカラー）
+ *      - マウス追従インタラクション
+ *      - 回転アニメーション
+ *      - 波のようなうねり動作
+ *      - レスポンシブ対応
+ *
+ * 7. initializeGSAP()
  *    - 日本語: GSAP アニメーション初期化（ScrollTrigger含む）
  *    - English: Initialize GSAP animations (including ScrollTrigger)
  *    - 機能:
@@ -115,22 +131,22 @@
  *      - ナビバー: スクロール時クラス追加
  *      - パララックス: ヒーロー画像視差効果
  *
- * 7. initializeScrollAnimations()
+ * 8. initializeScrollAnimations()
  *    - 日本語: スクロールアニメーション設定(IntersectionObserver - フォールバック用)
  *    - English: Set up scroll animations (IntersectionObserver - fallback)
  *    - 対象: .skill-card, .timeline-item, .contact-item, etc.
  *
- * 8. animateStatNumber(element: HTMLElement)
+ * 9. animateStatNumber(element: HTMLElement)
  *    - 日本語: 数値統計のカウントアップアニメーション（フォールバック用）
  *    - English: Count-up animation for numeric statistics (fallback)
  *    - 使用: .stat-number要素
  *
- * 9. initializeTypingEffect()
- *    - 日本語: ヒーローセクションのタイピングエフェクト（Typed.js使用）
- *    - English: Typing effect for hero section (using Typed.js)
- *    - 使用: typeText(element, text, speed) - フォールバック
+ * 10. initializeTypingEffect()
+ *     - 日本語: ヒーローセクションのタイピングエフェクト（Typed.js使用）
+ *     - English: Typing effect for hero section (using Typed.js)
+ *     - 使用: typeText(element, text, speed) - フォールバック
  *
- * 10. typeText(element: HTMLElement, text: string, speed: number)
+ * 11. typeText(element: HTMLElement, text: string, speed: number)
  *     - 日本語: タイプライター実装（フォールバック用）
  *     - English: Typewriter implementation (fallback)
  *
@@ -268,6 +284,7 @@
 
 // ページ読み込み時の初期化
 document.addEventListener('DOMContentLoaded', function () {
+    console.log('🎬 DOM Content Loaded - Starting initialization...');
     initializeSplashScreen();
     // 基本機能は即座に初期化
     initializeNavigation();
@@ -297,10 +314,12 @@ function initializeSplashScreen() {
 
             // フェードアウト完了後にメインコンテンツ表示
             setTimeout(() => {
+                console.log('💫 Splash screen fade-out complete, showing main content...');
                 mainContent.classList.add('show');
                 splashScreen.style.display = 'none';
 
                 // メインコンテンツが表示された後に重い処理を実行
+                console.log('🚀 About to call initializeMainContentFeatures...');
                 initializeMainContentFeatures();
             }, 1000);
         }, 1000);
@@ -319,10 +338,13 @@ function initializeSplashScreen() {
     });
 
     function skipSplashScreen() {
+        console.log('⏩ Skipping splash screen...');
         splashScreen.classList.add('fade-out');
         setTimeout(() => {
+            console.log('💫 Skip: showing main content...');
             mainContent.classList.add('show');
             splashScreen.style.display = 'none';
+            console.log('🚀 Skip: calling initializeMainContentFeatures...');
             initializeMainContentFeatures();
         }, 500);
     }
@@ -330,8 +352,11 @@ function initializeSplashScreen() {
 
 // メインコンテンツの機能を初期化
 function initializeMainContentFeatures() {
+    console.log('🎪 Initializing main content features...');
+    initializeThreeJS();
     initializeGSAP();
     initializeScrollAnimations();
+    initializeAtCoderSection(); // AtCoderセクションの初期化
     setTimeout(() => {
         initializeTypingEffect();
     }, 500);
@@ -454,6 +479,229 @@ function animateStatNumber(element) {
     }, 30);
 }
 
+// Three.js 3Dパーティクル背景の初期化
+function initializeThreeJS() {
+    console.log('🎨 Initializing Three.js...');
+    
+    // Three.jsが読み込まれているか確認
+    if (typeof THREE === 'undefined') {
+        console.warn('Three.js not loaded, skipping 3D background');
+        return;
+    }
+    
+    console.log('✅ Three.js loaded successfully');
+
+    const canvas = document.getElementById('hero-canvas');
+    if (!canvas) {
+        console.error('❌ Canvas element not found');
+        return;
+    }
+    
+    console.log('✅ Canvas found, creating scene...');
+
+    // シーン、カメラ、レンダラーの設定
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ 
+        canvas: canvas,
+        alpha: true,
+        antialias: true 
+    });
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    camera.position.z = 5;
+    
+    console.log('✅ Renderer created, size:', window.innerWidth, 'x', window.innerHeight);
+    console.log('✅ Camera position:', camera.position.z);
+
+    // パーティクル群の作成（3種類）
+    const particlesGroups = [];
+    
+    // AtCoderカラーパレット（明るく調整）
+    const colors = [
+        new THREE.Color(0xA0A0A0), // Gray - 明るく
+        new THREE.Color(0xA05000), // Brown - 明るく
+        new THREE.Color(0x00FF00), // Green - 明るく
+        new THREE.Color(0x00FFFF), // Cyan - 明るく
+        new THREE.Color(0x4080FF), // Blue - 明るく
+        new THREE.Color(0xFFFF00), // Yellow - 明るく
+        new THREE.Color(0xFFAA00), // Orange - 明るく
+        new THREE.Color(0xFF0000)  // Red
+    ];
+
+    // メインパーティクル（大量・小さい）
+    createParticleGroup(2500, 0.08, 0.9);
+    
+    // 大きな輝くパーティクル
+    createParticleGroup(200, 0.15, 1.0, true);
+    
+    // 超大型パーティクル（目立つ）
+    createParticleGroup(50, 0.3, 1.0, true);
+
+    function createParticleGroup(count, size, opacity, glow = false) {
+        const geometry = new THREE.BufferGeometry();
+        const posArray = new Float32Array(count * 3);
+        const colorsArray = new Float32Array(count * 3);
+        const sizesArray = new Float32Array(count);
+
+        for (let i = 0; i < count * 3; i += 3) {
+            // 球体状に配置
+            const radius = 8 + Math.random() * 12;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.random() * Math.PI;
+            
+            posArray[i] = radius * Math.sin(phi) * Math.cos(theta);
+            posArray[i + 1] = radius * Math.sin(phi) * Math.sin(theta);
+            posArray[i + 2] = radius * Math.cos(phi);
+
+            // ランダムな色
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            colorsArray[i] = randomColor.r;
+            colorsArray[i + 1] = randomColor.g;
+            colorsArray[i + 2] = randomColor.b;
+            
+            // サイズにランダム性
+            sizesArray[i / 3] = size * (0.5 + Math.random() * 0.5);
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3));
+        geometry.setAttribute('size', new THREE.BufferAttribute(sizesArray, 1));
+
+        const material = new THREE.PointsMaterial({
+            size: size,
+            vertexColors: true,
+            transparent: true,
+            opacity: opacity,
+            blending: THREE.AdditiveBlending,
+            sizeAttenuation: true
+        });
+
+        const mesh = new THREE.Points(geometry, material);
+        scene.add(mesh);
+        particlesGroups.push({ mesh, geometry, glow, speed: 0.2 + Math.random() * 0.3 });
+    }
+
+    // 接続線を追加（一部のパーティクル間）
+    const lineGeometry = new THREE.BufferGeometry();
+    const lineMaterial = new THREE.LineBasicMaterial({
+        color: 0x4080FF,
+        transparent: true,
+        opacity: 0.15,
+        blending: THREE.AdditiveBlending
+    });
+    const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
+    scene.add(lines);
+
+    // マウス追従用の変数
+    let mouseX = 0;
+    let mouseY = 0;
+    let targetX = 0;
+    let targetY = 0;
+
+    // マウス移動イベント
+    document.addEventListener('mousemove', (event) => {
+        mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+        mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+    });
+
+    // ウィンドウリサイズ対応
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // アニメーションループ
+    let time = 0;
+    function animate() {
+        requestAnimationFrame(animate);
+        time += 0.005;
+
+        // 各パーティクルグループをアニメーション
+        particlesGroups.forEach((group, index) => {
+            const { mesh, geometry, glow, speed } = group;
+            
+            // 回転（各グループで異なる速度）
+            mesh.rotation.y = time * speed * 0.3;
+            mesh.rotation.x = time * speed * 0.2;
+            mesh.rotation.z = time * speed * 0.1;
+
+            // 波のような動き + 拡大縮小
+            const positions = geometry.attributes.position.array;
+            const sizes = geometry.attributes.size.array;
+            
+            for (let i = 0; i < positions.length / 3; i++) {
+                const i3 = i * 3;
+                const x = positions[i3];
+                const y = positions[i3 + 1];
+                const z = positions[i3 + 2];
+                
+                // うねり
+                const wave = Math.sin(time * 2 + x * 0.3 + y * 0.3 + z * 0.3) * 0.02;
+                positions[i3] += wave * Math.cos(time + i * 0.1);
+                positions[i3 + 1] += wave * Math.sin(time + i * 0.1);
+                positions[i3 + 2] += wave * Math.cos(time * 0.5 + i * 0.1);
+                
+                // グローエフェクト（大きいパーティクル）
+                if (glow && sizes[i]) {
+                    sizes[i] = geometry.attributes.size.array[i] * (1 + Math.sin(time * 3 + i) * 0.3);
+                }
+            }
+            
+            geometry.attributes.position.needsUpdate = true;
+            if (glow) {
+                geometry.attributes.size.needsUpdate = true;
+            }
+        });
+
+        // 接続線の更新（近いパーティクル同士を繋ぐ）
+        if (time % 0.5 < 0.01) { // 適度に更新頻度を抑える
+            updateConnections();
+        }
+
+        // マウス追従（滑らかに）
+        targetX += (mouseX - targetX) * 0.05;
+        targetY += (mouseY - targetY) * 0.05;
+        
+        camera.position.x = targetX * 2;
+        camera.position.y = targetY * 2;
+        camera.lookAt(scene.position);
+
+        renderer.render(scene, camera);
+    }
+
+    function updateConnections() {
+        const positions = particlesGroups[0].geometry.attributes.position.array;
+        const linePositions = [];
+        const maxDistance = 2;
+        const maxConnections = 100;
+        let connectionCount = 0;
+
+        for (let i = 0; i < positions.length && connectionCount < maxConnections; i += 9) {
+            for (let j = i + 9; j < positions.length && connectionCount < maxConnections; j += 9) {
+                const dx = positions[i] - positions[j];
+                const dy = positions[i + 1] - positions[j + 1];
+                const dz = positions[i + 2] - positions[j + 2];
+                const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+                if (distance < maxDistance) {
+                    linePositions.push(positions[i], positions[i + 1], positions[i + 2]);
+                    linePositions.push(positions[j], positions[j + 1], positions[j + 2]);
+                    connectionCount++;
+                }
+            }
+        }
+
+        lines.geometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+    }
+
+    console.log('🚀 Starting animation loop...');
+    console.log('📦 Total particles:', particlesGroups.reduce((sum, g) => sum + g.geometry.attributes.position.count, 0));
+    animate();
+}
+
 // GSAP アニメーション初期化
 function initializeGSAP() {
     // GSAPが読み込まれているか確認
@@ -504,13 +752,14 @@ function initializeGSAP() {
         scrollTrigger: {
             trigger: '.skills-grid',
             start: 'top 80%',
-            toggleActions: 'play none none reverse'
+            toggleActions: 'play none none none'
         },
         duration: 0.6,
         y: 50,
         opacity: 0,
         stagger: 0.1,
-        ease: 'power2.out'
+        ease: 'power2.out',
+        clearProps: 'all'
     });
 
     // タイムラインアイテムのアニメーション
@@ -518,13 +767,14 @@ function initializeGSAP() {
         scrollTrigger: {
             trigger: '.timeline',
             start: 'top 80%',
-            toggleActions: 'play none none reverse'
+            toggleActions: 'play none none none'
         },
         duration: 0.8,
         x: -100,
         opacity: 0,
         stagger: 0.2,
-        ease: 'power3.out'
+        ease: 'power3.out',
+        clearProps: 'all'
     });
 
     // AtCoderカードのアニメーション
@@ -532,7 +782,7 @@ function initializeGSAP() {
         scrollTrigger: {
             trigger: '.atcoder-cards',
             start: 'top 80%',
-            toggleActions: 'play none none reverse'
+            toggleActions: 'play none none none'
         },
         duration: 1,
         scale: 0.8,
@@ -547,13 +797,14 @@ function initializeGSAP() {
         scrollTrigger: {
             trigger: '.atcoder-goals',
             start: 'top 80%',
-            toggleActions: 'play none none reverse'
+            toggleActions: 'play none none none'
         },
         duration: 0.8,
         y: 60,
         opacity: 0,
         stagger: 0.2,
-        ease: 'power3.out'
+        ease: 'power3.out',
+        clearProps: 'all'
     });
 
     // セクションタイトルのアニメーション
@@ -562,12 +813,13 @@ function initializeGSAP() {
             scrollTrigger: {
                 trigger: title,
                 start: 'top 85%',
-                toggleActions: 'play none none reverse'
+                toggleActions: 'play none none none'
             },
             duration: 1,
             x: index % 2 === 0 ? -100 : 100,
             opacity: 0,
-            ease: 'power3.out'
+            ease: 'power3.out',
+            clearProps: 'all'
         });
     });
 
@@ -577,12 +829,13 @@ function initializeGSAP() {
             scrollTrigger: {
                 trigger: subtitle,
                 start: 'top 85%',
-                toggleActions: 'play none none reverse'
+                toggleActions: 'play none none none'
             },
             duration: 0.8,
             y: 30,
             opacity: 0,
-            ease: 'power2.out'
+            ease: 'power2.out',
+            clearProps: 'all'
         });
     });
 
@@ -1696,15 +1949,6 @@ function animateStatValue(element, targetValue) {
             }
         }, stepDuration);
     }
-
-// メインコンテンツの機能を初期化
-function initializeMainContentFeatures() {
-    initializeScrollAnimations();
-    initializeAtCoderSection();
-    setTimeout(() => {
-        initializeTypingEffect();
-    }, 500);
-}
 
 // データを手動で再読み込み
 function reloadAtCoderData() {
