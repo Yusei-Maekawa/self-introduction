@@ -674,83 +674,271 @@ body {
     background: var(--section-bg);
 }
 
-.timeline {
-    position: relative;
-    max-width: 800px;
-    margin: 0 auto;
+/* 抽象的な要約カード（index の経験セクション上部） */
+.abstract-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    opacity: 1 !important;
 }
 
+.abstract-card {
+    background: linear-gradient(180deg, #ffffff, #fbfbff);
+    border-radius: 12px;
+    padding: 1.1rem 1.2rem;
+    box-shadow: 0 6px 20px rgba(16,24,40,0.06);
+    cursor: pointer;
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease;
+    border: 1px solid rgba(0,0,0,0.04);
+    opacity: 1 !important;
+    transform: none !important;
+}
+
+.abstract-card:focus,
+.abstract-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 40px rgba(79,70,229,0.08);
+}
+
+.card-title {
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.4rem;
+}
+
+.card-summary {
+    color: var(--text-light);
+    font-size: 0.95rem;
+}
+
+/* これまでの軌跡（タイムライン） - 縦線中心・左右交互レイアウト */
+.timeline {
+    position: relative;
+    padding: 3rem 0;
+    margin: 2rem auto;
+    max-width: 1000px;
+}
+
+/* 中心の縦線 */
 .timeline::before {
     content: '';
     position: absolute;
     left: 50%;
     top: 0;
-    bottom: 0;
-    width: 2px;
-    background: var(--secondary-color);
     transform: translateX(-50%);
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(180deg, 
+        rgba(52, 152, 219, 0.3), 
+        rgba(52, 152, 219, 0.7) 20%, 
+        rgba(52, 152, 219, 0.7) 80%, 
+        rgba(52, 152, 219, 0.3));
+    border-radius: 4px;
+    z-index: 100;
 }
 
 .timeline-item {
     position: relative;
-    margin: 2rem 0;
+    width: 100%;
+    margin-bottom: 4rem;
     display: flex;
     align-items: center;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.timeline-item:hover {
-    transform: translateX(10px) scale(1.02);
+/* 左配置 */
+.timeline-item.left {
+    justify-content: flex-start;
+}
+
+.timeline-item.left .timeline-content {
+    margin-right: auto;
+    margin-left: 0;
+    width: calc(50% - 3rem);
+    text-align: right;
+}
+
+.timeline-item.left .timeline-connector {
+    right: auto;
+    left: calc(50% - 0.75rem);
+}
+
+.timeline-item.left .timeline-year-bg {
+    left: calc(50% + 2rem);
+    right: auto;
+}
+
+/* 右配置 */
+.timeline-item.right {
+    justify-content: flex-end;
+}
+
+.timeline-item.right .timeline-content {
+    margin-left: auto;
+    margin-right: 0;
+    width: calc(50% - 3rem);
+    text-align: left;
+}
+
+.timeline-item.right .timeline-connector {
+    left: auto;
+    right: calc(50% - 0.75rem);
+}
+
+.timeline-item.right .timeline-year-bg {
+    right: calc(50% + 2rem);
+    left: auto;
+}
+
+/* 中心の接続点（ドット） */
+.timeline-connector {
+    position: absolute;
+    top: 1.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    background: white;
+    border: 3px solid var(--secondary-color);
+    border-radius: 50%;
+    z-index: 10;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.1);
+}
+
+.timeline-item:hover .timeline-connector,
+.timeline-item.expanded .timeline-connector {
+    transform: scale(1.4);
+    background: var(--secondary-color);
+    box-shadow: 0 0 0 8px rgba(52, 152, 219, 0.2), 0 0 20px rgba(52, 152, 219, 0.4);
+}
+
+/* 大きな西暦背景 */
+.timeline-year-bg {
+    position: absolute;
+    top: -0.5rem;
+    font-size: 8rem;
+    font-weight: 900;
+    color: rgba(52, 152, 219, 0.05);
+    z-index: 0;
+    pointer-events: visibleStroke;
+    user-select: none;
+    font-family: 'Arial Black', sans-serif;
+    letter-spacing: -0.1em;
+    transition: all 1s ease-out;
+}
+
+.timeline-item:hover .timeline-year-bg,
+.timeline-item.expanded .timeline-year-bg {
+    color: rgba(52, 152, 219, 0.12);
+    transform: scale(1.05);
+}
+/**
+.timeline-contentを最初overflowがhiddenのとき、概要だけ見せておいて、expandedクラスがついたらmax-heightを大きくして全文見せるようにする
+*/
+.timeline-content {   
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    position: relative;
+    z-index: 5;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    max-height: 150px;
+    overflow: hidden;
+}
+
+.timeline-item.expanded .timeline-content {
+    max-height: 2500px;
+    overflow: visible;
+    box-shadow: 0 15px 50px rgba(52, 152, 219, 0.15);
 }
 
 .timeline-item:hover .timeline-content {
-    box-shadow: 0 15px 40px rgba(52, 152, 219, 0.2);
-}
-
-.timeline-item:nth-child(odd) {
-    flex-direction: row-reverse;
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(52, 152, 219, 0.12);
 }
 
 .timeline-date {
-    background: var(--secondary-color);
+    display: inline-block;
+    background: linear-gradient(135deg, var(--secondary-color), #667eea);
     color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 50px;
-    font-weight: 500;
-    white-space: nowrap;
-}
-
-.timeline-content {
-    background: white;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: var(--shadow);
-    margin: 0 2rem;
-    flex: 1;
+    padding: 0.5rem 1.2rem;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.25);
 }
 
 .timeline-content h3 {
     color: var(--primary-color);
     margin-bottom: 1rem;
+    font-size: 1.3rem;
 }
 
 .timeline-content p {
     color: var(--text-light);
     margin-bottom: 1rem;
+    line-height: 1.7;
 }
 
 .timeline-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
+    margin-top: 1rem;
 }
 
-.tag {
+.timeline-tags .tag {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    color: var(--secondary-color);
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.timeline-tags .tag:hover {
     background: var(--secondary-color);
     color: white;
-    padding: 0.3rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
+    transform: translateY(-2px);
+}
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+    .timeline::before {
+        left: 20px;
+    }
+
+    .timeline-item.left,
+    .timeline-item.right {
+        justify-content: flex-start;
+        padding-left: 50px;
+    }
+
+    .timeline-item.left .timeline-content,
+    .timeline-item.right .timeline-content {
+        width: calc(100% - 50px);
+        text-align: left;
+        margin: 0;
+    }
+
+    .timeline-item.left .timeline-connector,
+    .timeline-item.right .timeline-connector {
+        left: 12px;
+        right: auto;
+    }
+
+    .timeline-item.left .timeline-year-bg,
+    .timeline-item.right .timeline-year-bg {
+        font-size: 4rem;
+        left: auto;
+        right: 0;
+        top: 0;
+    }
 }
 
 /* お問い合わせセクション */
@@ -844,6 +1032,215 @@ body {
 
 .form-group textarea {
     resize: vertical;
+}
+
+/* 詳細ページへのリンクスタイル */
+.detail-link-container {
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+.detail-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+.detail-link:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 25px rgba(52, 152, 219, 0.4);
+    background: linear-gradient(135deg, #2980b9, #3498db);
+}
+
+.detail-link i {
+    font-size: 1rem;
+}
+
+/* 詳細ページのスタイル */
+.detail-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.detail-header {
+    background: white;
+    padding: 2rem 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    margin-bottom: 3rem;
+}
+
+.detail-header h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin: 1rem 0 0.5rem;
+}
+
+.detail-header .subtitle {
+    font-size: 1.1rem;
+    color: #7f8c8d;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.back-link:hover {
+    color: #2980b9;
+    transform: translateX(-5px);
+}
+
+.detail-content {
+    background: white;
+    border-radius: 16px;
+    padding: 3rem;
+    margin-bottom: 3rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.detail-section {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #ecf0f1;
+}
+
+.detail-section:last-child {
+    border-bottom: none;
+}
+
+.detail-section h2 {
+    font-size: 1.8rem;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.detail-section h2 i {
+    color: #3498db;
+    font-size: 1.5rem;
+}
+
+.detail-section p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #34495e;
+    margin-bottom: 1rem;
+}
+
+.detail-section ul, .detail-section ol {
+    margin-left: 2rem;
+    margin-bottom: 1rem;
+}
+
+.detail-section li {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #34495e;
+    margin-bottom: 0.5rem;
+}
+
+.highlight-section {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 2rem;
+    border-radius: 12px;
+    border: none;
+}
+
+.skills-gained {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.skill-item {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.skill-item:hover {
+    transform: translateY(-5px);
+}
+
+.skill-item i {
+    font-size: 2.5rem;
+    color: #3498db;
+    margin-bottom: 1rem;
+}
+
+.skill-item h3 {
+    font-size: 1.2rem;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.skill-item p {
+    font-size: 0.95rem;
+    color: #7f8c8d;
+    margin: 0;
+}
+
+.detail-footer {
+    background: white;
+    padding: 2rem 0;
+    text-align: center;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.back-link-bottom {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+.back-link-bottom:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 25px rgba(52, 152, 219, 0.4);
+}
+
+@media (max-width: 768px) {
+    .detail-header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .detail-content {
+        padding: 1.5rem;
+    }
+    
+    .detail-section h2 {
+        font-size: 1.4rem;
+    }
+    
+    .skills-gained {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* フッター */

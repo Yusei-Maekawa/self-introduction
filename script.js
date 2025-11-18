@@ -360,6 +360,12 @@ function initializeMainContentFeatures() {
     setTimeout(() => {
         initializeTypingEffect();
     }, 500);
+        // Initialize life timeline interactions if present
+        try {
+            initializeLifeJourney();
+        } catch (e) {
+            // ignore if not present
+        }
 }
 
 // ナビゲーション機能
@@ -433,12 +439,15 @@ function initializeScrollAnimations() {
         });
     }, observerOptions);
 
-    // アニメーション対象の要素を設定
+    // アニメーション対象の要素を設定（.abstract-cardは除外）
     const animatedElements = document.querySelectorAll(
-        '.skill-card, .timeline-item, .contact-item, .about-text, .about-stats'
+        '.skill-card, .timeline-item:not(.abstract-card), .contact-item, .about-text, .about-stats, #journey-timeline .timeline-item'
     );
 
     animatedElements.forEach(el => {
+        // .abstract-cardやその子要素は除外
+        if (el.closest('.abstract-grid')) return;
+        
         el.style.opacity = '0';
         el.style.transform = 'translateY(20px)';
         el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
@@ -762,20 +771,23 @@ function initializeGSAP() {
         clearProps: 'all'
     });
 
-    // タイムラインアイテムのアニメーション
-    gsap.from('.timeline-item', {
-        scrollTrigger: {
-            trigger: '.timeline',
-            start: 'top 80%',
-            toggleActions: 'play none none none'
-        },
-        duration: 0.8,
-        x: -100,
-        opacity: 0,
-        stagger: 0.2,
-        ease: 'power3.out',
-        clearProps: 'all'
-    });
+    // タイムラインアイテムのアニメーション（抽象カードを除外）
+    const timelineItemsToAnimate = gsap.utils.toArray('#journey-timeline .timeline-item');
+    if (timelineItemsToAnimate.length > 0) {
+        gsap.from(timelineItemsToAnimate, {
+            scrollTrigger: {
+                trigger: '.timeline',
+                start: 'top 80%',
+                toggleActions: 'play none none none'
+            },
+            duration: 0.8,
+            x: -100,
+            opacity: 0,
+            stagger: 0.2,
+            ease: 'power3.out',
+            clearProps: 'all'
+        });
+    }
 
     // AtCoderカードのアニメーション
     gsap.from('.atcoder-card', {
@@ -1213,6 +1225,70 @@ function initializeAtCoderSection() {
 
     // Goals initialization
     initializeAtCoderGoals();
+}
+
+// これまでの軌跡: タイムラインの初期化 (expand/collapse + scroll reveal)
+function initializeLifeJourney() {
+    const timelineItems = document.querySelectorAll('#journey-timeline .timeline-item');
+    if (!timelineItems || timelineItems.length === 0) return;
+
+    // キーボード操作のための tabindex
+    timelineItems.forEach(item => {
+        item.setAttribute('tabindex', '0');
+    });
+
+    // クリックで詳細を表示するアクション
+    timelineItems.forEach(item => {
+        item.addEventListener('click', () => {
+            item.classList.toggle('expanded');
+            // When expanded, increase max height
+            const content = item.querySelector('.timeline-content');
+            if (item.classList.contains('expanded')) {
+                content.style.maxHeight = content.scrollHeight + 'px';
+            } else {
+                content.style.maxHeight = null;
+            }
+        });
+
+        item.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                item.click();
+            }
+        });
+    });
+
+    // Scroll reveal for the timeline items - 初期表示を保証
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+                entry.target.classList.add('revealed');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+    timelineItems.forEach(item => {
+        // 既に表示されている場合はopacity:0にしない
+        const rect = item.getBoundingClientRect();
+        const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+        
+        if (!isVisible) {
+            item.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(20px)';
+            observer.observe(item);
+        } else {
+            // 既に表示範囲内の要素はそのまま表示
+            item.style.opacity = '1';
+            item.style.transform = 'translateY(0)';
+            item.classList.add('revealed');
+        }
+    });
+
+    // 抽象カードとの連動は削除（抽象グリッドなし）
 }
 
 // AtCoderのデータを取得する関数
