@@ -821,8 +821,8 @@ body {
     font-size: 8rem;
     font-weight: 900;
     color: rgba(52, 152, 219, 0.05);
-    z-index: 0;
-    pointer-events: visibleStroke;
+    z-index: -1;
+    pointer-events: none;
     user-select: none;
     font-family: 'Arial Black', sans-serif;
     letter-spacing: -0.1em;
@@ -843,16 +843,28 @@ body {
     border-radius: 16px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
     position: relative;
-    z-index: 5;
+    z-index: 1;
     transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    max-height: 150px;
-    overflow: hidden;
+    cursor: pointer;
 }
 
 .timeline-item.expanded .timeline-content {
-    max-height: 2500px;
-    overflow: visible;
     box-shadow: 0 15px 50px rgba(52, 152, 219, 0.15);
+    background: white;
+}
+
+/* 詳細部分は最初非表示 */
+.timeline-details {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.timeline-item.expanded .timeline-details {
+    max-height: 3000px;
+    opacity: 1;
+    margin-top: 1rem;
 }
 
 .timeline-item:hover .timeline-content {
@@ -874,8 +886,43 @@ body {
 
 .timeline-content h3 {
     color: var(--primary-color);
-    margin-bottom: 1rem;
+    margin-bottom: 0;
     font-size: 1.3rem;
+    position: relative;
+    padding-right: 1rem;
+}
+
+/* ホバー時に「もっと知りたい！！」を表示 */
+.timeline-content::after {
+    content: 'もっと知りたい！！';
+    position: absolute;
+    bottom: 1rem;
+    right: 1.5rem;
+    background: linear-gradient(135deg, var(--secondary-color), #667eea);
+    color: white;
+    padding: 0.5rem 1.2rem;
+    border-radius: 25px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: none;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+.timeline-item:not(.expanded) .timeline-content:hover::after {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.timeline-item.expanded .timeline-content::after {
+    content: '閉じる';
+    opacity: 0.7;
+}
+
+.timeline-item.expanded .timeline-content:hover::after {
+    opacity: 1;
 }
 
 .timeline-content p {
@@ -1571,7 +1618,7 @@ body {
 /* AtCoderセクション */
 .atcoder-section {
     padding: 100px 0;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #06b6d4 100%);
     position: relative;
     overflow: hidden;
 }

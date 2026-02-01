@@ -1230,7 +1230,12 @@ function initializeAtCoderSection() {
 // これまでの軌跡: タイムラインの初期化 (expand/collapse + scroll reveal)
 function initializeLifeJourney() {
     const timelineItems = document.querySelectorAll('#journey-timeline .timeline-item');
-    if (!timelineItems || timelineItems.length === 0) return;
+    if (!timelineItems || timelineItems.length === 0) {
+        console.log('Timeline items not found');
+        return;
+    }
+
+    console.log(`Initializing ${timelineItems.length} timeline items`);
 
     // キーボード操作のための tabindex
     timelineItems.forEach(item => {
@@ -1239,24 +1244,31 @@ function initializeLifeJourney() {
 
     // クリックで詳細を表示するアクション
     timelineItems.forEach(item => {
-        item.addEventListener('click', () => {
-            item.classList.toggle('expanded');
-            // When expanded, increase max height
-            const content = item.querySelector('.timeline-content');
-            if (item.classList.contains('expanded')) {
-                content.style.maxHeight = content.scrollHeight + 'px';
-            } else {
-                content.style.maxHeight = null;
+        // 既存のイベントリスナーを削除（重複防止）
+        const newItem = item.cloneNode(true);
+        item.parentNode.replaceChild(newItem, item);
+        
+        newItem.addEventListener('click', () => {
+            newItem.classList.toggle('expanded');
+            // 詳細部分のmax-heightを動的に設定（CSSアニメーションのため）
+            const details = newItem.querySelector('.timeline-details');
+            if (newItem.classList.contains('expanded') && details) {
+                details.style.maxHeight = details.scrollHeight + 'px';
+            } else if (details) {
+                details.style.maxHeight = '0';
             }
         });
 
-        item.addEventListener('keydown', (e) => {
+        newItem.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                item.click();
+                newItem.click();
             }
         });
     });
+
+    // 再取得（cloneNodeで置き換えたため）
+    const updatedTimelineItems = document.querySelectorAll('#journey-timeline .timeline-item');
 
     // Scroll reveal for the timeline items - 初期表示を保証
     const observer = new IntersectionObserver((entries) => {
@@ -1270,7 +1282,7 @@ function initializeLifeJourney() {
         });
     }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
 
-    timelineItems.forEach(item => {
+    updatedTimelineItems.forEach(item => {
         // 既に表示されている場合はopacity:0にしない
         const rect = item.getBoundingClientRect();
         const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
@@ -1287,6 +1299,8 @@ function initializeLifeJourney() {
             item.classList.add('revealed');
         }
     });
+
+    console.log('Timeline initialization complete');
 
     // 抽象カードとの連動は削除（抽象グリッドなし）
 }

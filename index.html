@@ -223,9 +223,6 @@
                         <a href="#atcoder" class="nav-link">競技プログラミング</a>
                     </li>
                     <li class="nav-item">
-                        <a href="contest-achievements.html" class="nav-link">コンテスト実績</a>
-                    </li>
-                    <li class="nav-item">
                         <a href="#experience" class="nav-link">経験</a>
                     </li>
                     <li class="nav-item">
@@ -441,64 +438,6 @@
                         </a>
                     </div>
                 </div>
-                <!-- 目標セクション: アルゴリズム / ヒューリスティック -->
-                <div class="atcoder-goals">
-                    <h3 class="goals-title">今後の目標</h3>
-                    <div class="goals-grid">
-                        <div class="goal-card" data-contest-type="algo" tabindex="0" role="button" aria-expanded="false">
-                            <div class="goal-header">
-                                <h4>アルゴリズム部門</h4>
-                                <div class="goal-tiles" aria-hidden="true" data-target="600"></div>
-                            </div>
-                            <div class="goal-progressbar" aria-hidden="true">
-                                <div class="goal-progress-label">目標までの達成度</div>
-                                <div class="goal-progress-track"><div class="goal-progress-fill" style="width:0%"></div></div>
-                            </div>
-                            <div class="goal-details">
-                                <h5>AtCoder における成長目標</h5>
-                                <p>私は競技プログラミングで継続的に成長することを重視しています。短期・中期・長期の目標を定め、計画的に問題演習とコンテスト参加を続けます。</p>
-                                <h6>アルゴリズム部門</h6>
-                                <ul>
-                                    <li><strong>目標1:</strong> 2026年3月までに レート600（茶瓦2）</li>
-                                    <li><strong>目標2:</strong> 卒業まで（2027年3月）に レート1200（水色瓦1）</li>
-                                </ul>
-                                <p class="goal-note">定期的な進捗更新（現在のレート・最近のコンテスト結果）を載せ、達成度を可視化します。</p>
-                            </div>
-                        </div>
-
-                        <div class="goal-card" data-contest-type="heuristic" tabindex="0" role="button" aria-expanded="false">
-                            <div class="goal-header">
-                                <h4>ヒューリスティック部門</h4>
-                                <div class="goal-tiles" aria-hidden="true" data-target="1600"></div>
-                            </div>
-                            <div class="goal-progressbar" aria-hidden="true">
-                                <div class="goal-progress-label">目標までの達成度</div>
-                                <div class="goal-progress-track"><div class="goal-progress-fill" style="width:0%"></div></div>
-                            </div>
-                            <div class="goal-details">
-                                <h5>AtCoder における成長目標</h5>
-                                <p>私は競技プログラミングで継続的に成長することを重視しています。短期・中期・長期の目標を定め、計画的に問題演習とコンテスト参加を続けます。</p>
-                                <h6>ヒューリスティック部門</h6>
-                                <ul>
-                                    <li><strong>目標1:</strong> 2026年6月までに レート1600（青瓦1）</li>
-                                    <li><strong>目標2:</strong> 卒業まで（2027年3月）に レート2000（黄色瓦1）</li>
-                                </ul>
-                                <p class="goal-note">定期的な進捗更新（現在のレート・最近のコンテスト結果）を載せ、達成度を可視化します。</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="goal-progress-updates">
-                        <h4>進捗の更新</h4>
-                        <div class="goal-progress" id="goal-progress">現在のレート・最近のコンテスト結果はここに表示されます。</div>
-                    </div>
-                </div>
-                <div class="atcoder-note">
-                    <i class="fas fa-info-circle"></i>
-                    <p>水色コーダー（レート1200以上）を目指して、日々精進中です！</p>
-                    <button class="atcoder-reload-btn" onclick="reloadAtCoderData()">
-                        <i class="fas fa-sync-alt"></i> データを更新
-                    </button>
-                </div>
             </div>
         </section>
 
@@ -518,11 +457,13 @@
                         <div class="timeline-content">
                             <div class="timeline-date">小学生の頃</div>
                             <h3>エンジニアの原点 ー 友達と笑顔で遊ぶゲーム体験</h3>
-                            <p>マインクラフトや太鼓の達人など、友達と一緒に楽しくゲームをやることが大好きでした。この「みんなで楽しむ」体験が、将来エンジニアとして「人を笑顔にするモノを作りたい」という夢の原点になりました。</p>
-                            <div class="timeline-tags">
-                                <span class="tag">ゲーム好き</span>
-                                <span class="tag">友達との時間</span>
-                                <span class="tag">笑顔</span>
+                            <div class="timeline-details">
+                                <p>マインクラフトや太鼓の達人など、友達と一緒に楽しくゲームをやることが大好きでした。この「みんなで楽しむ」体験が、将来エンジニアとして「人を笑顔にするモノを作りたい」という夢の原点になりました。</p>
+                                <div class="timeline-tags">
+                                    <span class="tag">ゲーム好き</span>
+                                    <span class="tag">友達との時間</span>
+                                    <span class="tag">笑顔</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -533,11 +474,13 @@
                         <div class="timeline-content">
                             <div class="timeline-date">中学時代</div>
                             <h3>勉強が好きに ー 進学校へ</h3>
-                            <p>中学時代から勉強が好きになり、寝屋川高校という進学校に進学しました。この頃から、「情報系の大学で学び、ゲームを作って友達や親に楽しんでもらいたい」という夢と、「学費が安い学校で親の負担を減らしたい」という想いが芽生えました。</p>
-                            <div class="timeline-tags">
-                                <span class="tag">進学校</span>
-                                <span class="tag">夢の明確化</span>
-                                <span class="tag">親への想い</span>
+                            <div class="timeline-details">
+                                <p>中学時代から勉強が好きになり、寝屋川高校という進学校に進学しました。この頃から、「情報系の大学で学び、ゲームを作って友達や親に楽しんでもらいたい」という夢と、「学費が安い学校で親の負担を減らしたい」という想いが芽生えました。</p>
+                                <div class="timeline-tags">
+                                    <span class="tag">進学校</span>
+                                    <span class="tag">夢の明確化</span>
+                                    <span class="tag">親への想い</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -548,16 +491,18 @@
                         <div class="timeline-content">
                             <div class="timeline-date">高校時代（2020-2023）</div>
                             <h3>文武両道と挫折 ー 水泳部での成長と大学受験</h3>
-                            <p><strong>【水泳部での活動と成長】</strong><br>
-                            水泳部で個々のタイム向上とチーム全体の成長を目指し、2年生の夏から引退まで経験者の同級生と練習メニュー作成を担当。遅れて水泳を始めた私にとって、タイムを縮めることが大きなモチベーションとなり、経験者から学んだ技術を実践し、入部当初から5秒以上タイムを短縮しました。</p>
-                            <p>仲間との協力や支え合いの中で和気あいあいとした雰囲気でチームワークや友情を深め、年越しを一緒に過ごすほどの絆を築きました。遅れを取ったことへの焦りを乗り越え、継続的な努力と工夫で忍耐力や「やり抜く力」を養い、走力トレーニングで先輩に負けない記録を出すなど体力・技術の向上を実感しました。</p>
-                            <p><strong>【大学受験での挫折】</strong><br>
-                            高校3年の夏、考え込みすぎて極度のストレスを抱え、体調を崩してしまいました。結果は大学全落ち。路頭に迷いましたが、母親の紹介で大学と専門学校のダブルスクールに通える情報系の学校を見つけ、「もう一度頑張ろう」と決意しました。親に迷惑をかけたことへの申し訳なさから、「次いこう」で終わらせたくない。編入試験で再挑戦する道を選びました。</p>
-                            <div class="timeline-tags">
-                                <span class="tag">水泳部</span>
-                                <span class="tag">文武両道</span>
-                                <span class="tag">チームワーク</span>
-                                <span class="tag">挫折</span>
+                            <div class="timeline-details">
+                                <p><strong>【水泳部での活動と成長】</strong><br>
+                                水泳部で個々のタイム向上とチーム全体の成長を目指し、2年生の夏から引退まで経験者の同級生と練習メニュー作成を担当。遅れて水泳を始めた私にとって、タイムを縮めることが大きなモチベーションとなり、経験者から学んだ技術を実践し、入部当初から5秒以上タイムを短縮しました。</p>
+                                <p>仲間との協力や支え合いの中で和気あいあいとした雰囲気でチームワークや友情を深め、年越しを一緒に過ごすほどの絆を築きました。遅れを取ったことへの焦りを乗り越え、継続的な努力と工夫で忍耐力や「やり抜く力」を養い、走力トレーニングで先輩に負けない記録を出すなど体力・技術の向上を実感しました。</p>
+                                <p><strong>【大学受験での挫折】</strong><br>
+                                高校3年の夏、考え込みすぎて極度のストレスを抱え、体調を崩してしまいました。結果は大学全落ち。路頭に迷いましたが、母親の紹介で大学と専門学校のダブルスクールに通える情報系の学校を見つけ、「もう一度頑張ろう」と決意しました。親に迷惑をかけたことへの申し訳なさから、「次いこう」で終わらせたくない。編入試験で再挑戦する道を選びました。</p>
+                                <div class="timeline-tags">
+                                    <span class="tag">水泳部</span>
+                                    <span class="tag">文武両道</span>
+                                    <span class="tag">チームワーク</span>
+                                    <span class="tag">挫折</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -568,20 +513,22 @@
                         <div class="timeline-content">
                             <div class="timeline-date">2023年4月～2024年6月</div>
                             <h3>人生最大の挑戦 ー 編入試験への1年間</h3>
-                            <p><strong>【目標：大阪公立大学 工学部 情報工学科】</strong><br>
-                            2023年5月スタート、本番は2024年6月。生きてきた人生の中で最大ともいえる挑戦を踏み切りました。倍率・難易度ともに高く、科目は大学数学（線形代数、微分方程式、複素関数論、フーリエ関数、ラプラス変換）、専門科目（データ構造とアルゴリズム）、英語（TOEIC リーディング重視）。専門学校の授業とバイトをしながら、時間がない中で1年間習得に挑みました。</p>
-                            <p><strong>【成果と反省】</strong><br>
-                            10月に基本情報技術者試験一発合格、TOEICはR340で670点達成。応用情報技術者試験にも挑戦し、面接対策も実施。「楽しい気持ちを忘れずに取り組む」ことを意識し、大学科目も自分に合う科目を取りシナジーを作り、無駄のないスケジュールを作成。「無理をしすぎたら、楽しいものを楽しめなくなる」ことを前回の受験で学び、その課題もクリアしたはずでしたが、思いは届きませんでした。数学の勉強時間が足りなかったと反省しています。</p>
-                            <p class="detail-link-container">
-                                <a href="experience.html" class="detail-link" target="_blank">
-                                    <i class="fas fa-external-link-alt"></i> 詳細を見る（経験ページ）
-                                </a>
-                            </p>
-                            <div class="timeline-tags">
-                                <span class="tag">編入試験</span>
-                                <span class="tag">基本情報</span>
-                                <span class="tag">TOEIC 670</span>
-                                <span class="tag">大学数学</span>
+                            <div class="timeline-details">
+                                <p><strong>【目標：大阪公立大学 工学部 情報工学科】</strong><br>
+                                2023年5月スタート、本番は2024年6月。生きてきた人生の中で最大ともいえる挑戦を踏み切りました。倍率・難易度ともに高く、科目は大学数学（線形代数、微分方程式、複素関数論、フーリエ関数、ラプラス変換）、専門科目（データ構造とアルゴリズム）、英語（TOEIC リーディング重視）。専門学校の授業とバイトをしながら、時間がない中で1年間習得に挑みました。</p>
+                                <p><strong>【成果と反省】</strong><br>
+                                10月に基本情報技術者試験一発合格、TOEICはR340で670点達成。応用情報技術者試験にも挑戦し、面接対策も実施。「楽しい気持ちを忘れずに取り組む」ことを意識し、大学科目も自分に合う科目を取りシナジーを作り、無駄のないスケジュールを作成。「無理をしすぎたら、楽しいものを楽しめなくなる」ことを前回の受験で学び、その課題もクリアしたはずでしたが、思いは届きませんでした。数学の勉強時間が足りなかったと反省しています。</p>
+                                <p class="detail-link-container">
+                                    <a href="experience.html" class="detail-link" target="_blank">
+                                        <i class="fas fa-external-link-alt"></i> 詳細を見る（経験ページ）
+                                    </a>
+                                </p>
+                                <div class="timeline-tags">
+                                    <span class="tag">編入試験</span>
+                                    <span class="tag">基本情報</span>
+                                    <span class="tag">TOEIC 670</span>
+                                    <span class="tag">大学数学</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -592,22 +539,24 @@
                         <div class="timeline-content">
                             <div class="timeline-date">2024年10月～2025年7月</div>
                             <h3>受注納品管理システム開発 ー PMとしての挑戦と成長</h3>
-                            <p><strong>【プロジェクト概要】</strong><br>
-                            6〜7人チームで受注納品管理システムを開発。RFP読解、ヒアリング、要件定義、設計・実装・テストを経て納品する実践的な授業。PM（プロジェクトマネージャー）として挑戦しました。V字モデルに沿って進行し、初期納期は2025年1月31日でしたが、顧客からの変更要求で2025年7月に延期されました。</p>
-                            <p><strong>【PMとしての壁と成長】</strong><br>
-                            要件定義段階で「何から始めればよいのか」分からず、ユースケース図とアクティビティ図を作成して業務を可視化。しかし、チームマネジメントと技術共有をほぼ1人で行いキャパオーバーし、SVに下がり中継ぎ役に。3年進級後、人事異動で再びPMに。現在はプロトタイプ発表に向け、PHP（Laravel）でフロントエンド完成、設計チームとコーディングチームに分かれて並行作業中。</p>
-                            <p><strong>【学んだこと】</strong><br>
-                            座学と実務の差、チームワーク、柔軟な役割変更、報連相の重要性、GitHubでのコード管理、マネジメントと現場感覚の両立。</p>
-                            <p class="detail-link-container">
-                                <a href="product-detail.html" class="detail-link" target="_blank">
-                                    <i class="fas fa-external-link-alt"></i> プロジェクト詳細を見る
-                                </a>
-                            </p>
-                            <div class="timeline-tags">
-                                <span class="tag">PM経験</span>
-                                <span class="tag">V字モデル</span>
-                                <span class="tag">Laravel</span>
-                                <span class="tag">チーム開発</span>
+                            <div class="timeline-details">
+                                <p><strong>【プロジェクト概要】</strong><br>
+                                6〜7人チームで受注納品管理システムを開発。RFP読解、ヒアリング、要件定義、設計・実装・テストを経て納品する実践的な授業。PM（プロジェクトマネージャー）として挑戦しました。V字モデルに沿って進行し、初期納期は2025年1月31日でしたが、顧客からの変更要求で2025年7月に延期されました。</p>
+                                <p><strong>【PMとしての壁と成長】</strong><br>
+                                要件定義段階で「何から始めればよいのか」分からず、ユースケース図とアクティビティ図を作成して業務を可視化。しかし、チームマネジメントと技術共有をほぼ1人で行いキャパオーバーし、SVに下がり中継ぎ役に。3年進級後、人事異動で再びPMに。現在はプロトタイプ発表に向け、PHP（Laravel）でフロントエンド完成、設計チームとコーディングチームに分かれて並行作業中。</p>
+                                <p><strong>【学んだこと】</strong><br>
+                                座学と実務の差、チームワーク、柔軟な役割変更、報連相の重要性、GitHubでのコード管理、マネジメントと現場感覚の両立。</p>
+                                <p class="detail-link-container">
+                                    <a href="product-detail.html" class="detail-link" target="_blank">
+                                        <i class="fas fa-external-link-alt"></i> プロジェクト詳細を見る
+                                    </a>
+                                </p>
+                                <div class="timeline-tags">
+                                    <span class="tag">PM経験</span>
+                                    <span class="tag">V字モデル</span>
+                                    <span class="tag">Laravel</span>
+                                    <span class="tag">チーム開発</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -618,13 +567,15 @@
                         <div class="timeline-content">
                             <div class="timeline-date">2024年10月～</div>
                             <h3>AtCoder開始 ー 競技プログラミングへの挑戦</h3>
-                            <p>2024年10月から競技プログラミングに挑戦し、できる限りコンテストに参加しています。中々いい結果は残せず苦戦していますが、論理的思考力とアルゴリズム力を磨くため継続中です。</p>
-                            <p><strong>【目標】</strong><br>
-                            2026年3月までにアルゴリズムレート600、ヒューリスティックレート1500を目指しています。2027年3月までにはアルゴリズム1200（水色）、ヒューリスティック2000（黄色）達成を目標としています。</p>
-                            <div class="timeline-tags">
-                                <span class="tag">AtCoder</span>
-                                <span class="tag">競技プログラミング</span>
-                                <span class="tag">アルゴリズム</span>
+                            <div class="timeline-details">
+                                <p>2024年10月から競技プログラミングに挑戦し、できる限りコンテストに参加しています。中々いい結果は残せず苦戦していますが、論理的思考力とアルゴリズム力を磨くため継続中です。</p>
+                                <p><strong>【目標】</strong><br>
+                                2026年3月までにアルゴリズムレート600、ヒューリスティックレート1500を目指しています。2027年3月までにはアルゴリズム1200（水色）、ヒューリスティック2000（黄色）達成を目標としています。</p>
+                                <div class="timeline-tags">
+                                    <span class="tag">AtCoder</span>
+                                    <span class="tag">競技プログラミング</span>
+                                    <span class="tag">アルゴリズム</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -635,17 +586,19 @@
                         <div class="timeline-content">
                             <div class="timeline-date">2025年5月～</div>
                             <h3>個人開発開始 ー AI駆動開発でアプリ製作</h3>
-                            <p><strong>【きっかけ】</strong><br>
-                            2025年1月、先輩の就活話を聞き、2月〜3月から始める人もいると知り肝が冷えました。先輩から「何か1つプロダクトを作るといい」と聞き、3年生（2025年5月）に入ってからGitHubにプロダクト案をまとめ、開発をスタートしました。</p>
-                            <p><strong>【AI駆動開発の実践】</strong><br>
-                            開発技術について皆無だったため、AI駆動開発で知識を吸収しつつ、勉強しつつアプリ製作に取り掛かりました。フロントエンド・バックエンド様々な分野で面白さがあり、将来幅広い知識を駆使してアプリ開発を行いたいと感じ、志望をフルスタックエンジニアに変更しました（最初はゲームエンジニアと組み込みエンジニア）。</p>
-                            <p><strong>【夏季インターン】</strong><br>
-                            5Daysインターンが1社受かり参加（2025年8月4日〜8日）。倍率は10倍、専門学生は私だけでした。インターンで得た知識を2025年9月から、より一層アプリ開発に活かしています。</p>
-                            <div class="timeline-tags">
-                                <span class="tag">個人開発</span>
-                                <span class="tag">AI駆動開発</span>
-                                <span class="tag">フルスタック</span>
-                                <span class="tag">インターン</span>
+                            <div class="timeline-details">
+                                <p><strong>【きっかけ】</strong><br>
+                                2025年1月、先輩の就活話を聞き、2月〜3月から始める人もいると知り肝が冷えました。先輩から「何か1つプロダクトを作るといい」と聞き、3年生（2025年5月）に入ってからGitHubにプロダクト案をまとめ、開発をスタートしました。</p>
+                                <p><strong>【AI駆動開発の実践】</strong><br>
+                                開発技術について皆無だったため、AI駆動開発で知識を吸収しつつ、勉強しつつアプリ製作に取り掛かりました。フロントエンド・バックエンド様々な分野で面白さがあり、将来幅広い知識を駆使してアプリ開発を行いたいと感じ、志望をフルスタックエンジニアに変更しました（最初はゲームエンジニアと組み込みエンジニア）。</p>
+                                <p><strong>【夏季インターン】</strong><br>
+                                5Daysインターンが1社受かり参加（2025年8月4日〜8日）。倍率は10倍、専門学生は私だけでした。インターンで得た知識を2025年9月から、より一層アプリ開発に活かしています。</p>
+                                <div class="timeline-tags">
+                                    <span class="tag">個人開発</span>
+                                    <span class="tag">AI駆動開発</span>
+                                    <span class="tag">フルスタック</span>
+                                    <span class="tag">インターン</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -654,16 +607,18 @@
                         <div class="timeline-year-bg">2025</div>
                         <div class="timeline-connector"></div>
                         <div class="timeline-content">
-                            <div class="timeline-date">現在（2025年11月）</div>
+                            <div class="timeline-date">現在（2025年11月～）</div>
                             <h3>成長と面接準備 ー 多方面への挑戦</h3>
-                            <p><strong>【並行する多方面の挑戦】</strong><br>
-                            AtCoder、アプリ開発（家計簿アプリ、NewWordなど）、TOEIC、G検定を並行。2025年9月以降は燃え尽き気味になりましたが、「将来、英語・論理的思考・技術知識が大事になる」という信念で頑張っています。1年生の間、大学科目ばかりで専門的なことが遅れていると感じていたため、幅広く学習を続けています。</p>
-                            <p><strong>【面接練習を毎日続ける】</strong><br>
-                            面接に向けて、1日少しでも時間を取り、面接練習を続けています。「私がエンジニアになりたい理由」を改めて見つめ直し、小学生からの夢「人を笑顔にするモノを作る」ことを軸に、自己理解を深めています。</p>
-                            <div class="timeline-tags">
-                                <span class="tag">面接練習</span>
-                                <span class="tag">多方面挑戦</span>
-                                <span class="tag">自己理解</span>
+                            <div class="timeline-details">
+                                <p><strong>【並行する多方面の挑戦】</strong><br>
+                                AtCoder、アプリ開発（家計簿アプリ、NewWordなど）、TOEIC、G検定を並行。2025年9月以降は燃え尽き気味になりましたが、「将来、英語・論理的思考・技術知識が大事になる」という信念で頑張っています。1年生の間、大学科目ばかりで専門的なことが遅れていると感じていたため、幅広く学習を続けています。</p>
+                                <p><strong>【面接練習を毎日続ける】</strong><br>
+                                面接に向けて、1日少しでも時間を取り、面接練習を続けています。「私がエンジニアになりたい理由」を改めて見つめ直し、小学生からの夢「人を笑顔にするモノを作る」ことを軸に、自己理解を深めています。</p>
+                                <div class="timeline-tags">
+                                    <span class="tag">面接練習</span>
+                                    <span class="tag">多方面挑戦</span>
+                                    <span class="tag">自己理解</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -674,35 +629,37 @@
                         <div class="timeline-content">
                             <div class="timeline-date">未来への目標</div>
                             <h3>フルスタックエンジニアとして ー 幅広い技術で人を笑顔に</h3>
-                            <p><strong>【エンジニアになりたい理由】</strong><br>
-                            小学生の頃から「友達や親にゲームを遊んでもらって、笑顔になってもらいたい」という夢がありました。自分で一から作れること、唯一無二のモノを作って自慢したい気持ち、そして親に負担をかけたくないという想い。これらすべてが、エンジニアという職に強く惹かれた理由です。</p>
-                            <p>今では、ゲームだけでなく、Webアプリ・バックエンド・IoTなど幅広い分野に興味を持ち、「技術を通して人に価値や楽しさを届ける」ことを軸に、フルスタックエンジニアを目指しています。</p>
-                            <p><strong>【2026年3月までの目標】</strong><br>
-                            ・アプリ開発（家計簿アプリ、NewWord）完成<br>
-                            ・AtCoder アルゴリズムレート600<br>
-                            ・AtCoderヒューリスティックレート1500<br>
-                            ・TOEIC 800以上<br>
-                            ・Kaggle参加する<br>
-                            ・G検定 合格<br>
-                            ・Techブログ記事10個作る<br>
-                            ・Go言語 習得<br>
-                            ・大学単位124単位（卒業単位分）取得する<br>
-                            ・GitHub 1000 contributions 達成<br>
-                            ・開発系のアルバイト・インターンに参加して、「実務の開発」を学ぶ</p>
-                            <p><strong>【2027年3月までの目標】</strong><br>
-                            ・アプリ開発 +5種類作りたい<br>
-                            ・Go言語を使った プロダクト作成<br>
-                            ・AtCoder アルゴリズム レート1200（水色）<br>
-                            ・AtCoder ヒューリスティック レート2000（黄色）<br>
-                            ・Kaggle メダル1枚獲得<br>
-                            ・SNS活動 活発化する</p>
-                            <p><strong>【これからのビジョン】</strong><br>
-                            複数の技術に触れることで視野を広げ、幅広い分野でユーザー体験を向上させられるエンジニアになりたい。興味のある分野に積極的に挑戦しながら、得意分野を深めていきます。そして、小学生の頃から抱いていた「人を笑顔にする」という原点を忘れず、価値あるプロダクトを作り続けます。</p>
-                            <div class="timeline-tags">
-                                <span class="tag">フルスタック</span>
-                                <span class="tag">人を笑顔に</span>
-                                <span class="tag">2026/3目標</span>
-                                <span class="tag">2027/3目標</span>
+                            <div class="timeline-details">
+                                <p><strong>【エンジニアになりたい理由】</strong><br>
+                                小学生の頃から「友達や親にゲームを遊んでもらって、笑顔になってもらいたい」という夢がありました。自分で一から作れること、唯一無二のモノを作って自慢したい気持ち、そして親に負担をかけたくないという想い。これらすべてが、エンジニアという職に強く惹かれた理由です。</p>
+                                <p>今では、ゲームだけでなく、Webアプリ・バックエンド・IoTなど幅広い分野に興味を持ち、「技術を通して人に価値や楽しさを届ける」ことを軸に、フルスタックエンジニアを目指しています。</p>
+                                <p><strong>【2026年3月までの目標】</strong><br>
+                                ・アプリ開発（家計簿アプリ、NewWord）完成<br>
+                                ・AtCoder アルゴリズムレート600<br>
+                                ・AtCoderヒューリスティックレート1500<br>
+                                ・TOEIC 800以上<br>
+                                ・Kaggle参加する<br>
+                                ・G検定 合格<br>
+                                ・Techブログ記事10個作る<br>
+                                ・Go言語 習得<br>
+                                ・大学単位124単位（卒業単位分）取得する<br>
+                                ・GitHub 1000 contributions 達成<br>
+                                ・開発系のアルバイト・インターンに参加して、「実務の開発」を学ぶ</p>
+                                <p><strong>【2027年3月までの目標】</strong><br>
+                                ・アプリ開発 +5種類作りたい<br>
+                                ・Go言語を使った プロダクト作成<br>
+                                ・AtCoder アルゴリズム レート1200（水色）<br>
+                                ・AtCoder ヒューリスティック レート2000（黄色）<br>
+                                ・Kaggle メダル1枚獲得<br>
+                                ・SNS活動 活発化する</p>
+                                <p><strong>【これからのビジョン】</strong><br>
+                                複数の技術に触れることで視野を広げ、幅広い分野でユーザー体験を向上させられるエンジニアになりたい。興味のある分野に積極的に挑戦しながら、得意分野を深めていきます。そして、小学生の頃から抱いていた「人を笑顔にする」という原点を忘れず、価値あるプロダクトを作り続けます。</p>
+                                <div class="timeline-tags">
+                                    <span class="tag">フルスタック</span>
+                                    <span class="tag">人を笑顔に</span>
+                                    <span class="tag">2026/3目標</span>
+                                    <span class="tag">2027/3目標</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -787,7 +744,12 @@
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
     <!-- Typed.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.16/dist/typed.umd.js"></script>
+    
+    <!-- メインスクリプト（元のscript.jsを使用） -->
     <script src="script.js"></script>
+    
+    <!-- モジュール形式（開発中） -->
+    <!-- <script type="module" src="js/main.js"></script> -->
 </body>
 
 </html>

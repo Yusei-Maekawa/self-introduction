@@ -429,36 +429,7 @@
 </head>
 
 <body>
-    <!-- ナビゲーションバー -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <h2>Maedora</h2>
-            </div>
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="index.html#home" class="nav-link">ホーム</a>
-                </li>
-                <li class="nav-item">
-                    <a href="index.html#about" class="nav-link">私について</a>
-                </li>
-                <li class="nav-item">
-                    <a href="index.html#skills" class="nav-link">スキル</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link active">経験</a>
-                </li>
-                <li class="nav-item">
-                    <a href="index.html#contact" class="nav-link">お問い合わせ</a>
-                </li>
-            </ul>
-            <div class="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-    </nav>
+    
 
     <div class="experience-page">
         <h1 class="page-title">挑戦と未来</h1>
@@ -703,6 +674,14 @@
         document.addEventListener('DOMContentLoaded', () => {
             initScrollAnimations();
             initIntersectionObserver();
+            
+            // タイムライン機能の初期化（script.jsから）
+            if (typeof initializeLifeJourney === 'function') {
+                // 少し遅延させて確実にDOMが準備完了してから実行
+                setTimeout(() => {
+                    initializeLifeJourney();
+                }, 100);
+            }
             
             // 要素の初期化
             const elements = document.querySelectorAll('.value-tag, .goal-card, .accordion-item');
