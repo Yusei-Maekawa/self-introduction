@@ -350,7 +350,7 @@ function initializeSplashScreen() {
     }
 }
 
-// メインコンテンツの機能を初期化
+// メインコ��テンツの機能を初期化
 function initializeMainContentFeatures() {
     console.log('🎪 Initializing main content features...');
     initializeThreeJS();
@@ -539,7 +539,7 @@ function initializeThreeJS() {
         new THREE.Color(0xFF0000)  // Red
     ];
 
-    // メインパーティクル（大量・小さい）
+    // メインパーティ���ル（大量・小さい）
     createParticleGroup(2500, 0.08, 0.9);
     
     // 大きな輝くパーティクル
@@ -1149,15 +1149,19 @@ function initializeThemeToggle() {
 // ページ遷移アニメーション
 const transitionLink = document.querySelector('a[href="experience.html"]');
 
-transitionLink.addEventListener('click', (event) => {
-    event.preventDefault();
-    const mainContent = document.getElementById('main-content');
-    mainContent.classList.add('fade-out');
+if (transitionLink) {
+    transitionLink.addEventListener('click', (event) => {
+        event.preventDefault();
+        const mainContent = document.getElementById('main-content');
+        if (mainContent) {
+            mainContent.classList.add('fade-out');
+        }
 
-    setTimeout(() => {
-        window.location.href = 'experience.html';
-    }, 500); // アニメーションの時間に合わせる
-});
+        setTimeout(() => {
+            window.location.href = 'experience.html';
+        }, 500); // アニメーションの時間に合わせる
+    });
+}
 
 // ページ遷移のアニメーションを追加
 const links = document.querySelectorAll('a');
