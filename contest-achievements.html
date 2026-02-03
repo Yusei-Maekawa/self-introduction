@@ -5,30 +5,222 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>コンテスト実績 - Yusei Maekawa</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            padding-top: 80px;
+        }
+        
+        /* スクロールアニメーション用 */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* セクションヘッダーのアニメーション */
+        .section-header {
+            opacity: 0;
+            transform: translateY(-30px);
+            animation: fadeInDown 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+        }
+        
+        @keyframes fadeInDown {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* カードのフローティングアニメーション */
+        .achievement-card {
+            opacity: 0;
+            transform: translateY(50px) scale(0.95);
+            animation: cardFloatIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+        }
+        
+        @keyframes cardFloatIn {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        /* 結果アイテムのスタガーアニメーション */
+        .result-item {
+            opacity: 0;
+            transform: translateX(-30px);
+            animation: slideInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        
+        .result-item:nth-child(1) { animation-delay: 0.6s; }
+        .result-item:nth-child(2) { animation-delay: 0.8s; }
+        .result-item:nth-child(3) { animation-delay: 1.0s; }
+        .result-item:nth-child(4) { animation-delay: 1.2s; }
+        
+        @keyframes slideInLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        /* ハイライトアイテムのパルス効果 */
+        .result-item.highlight {
+            animation: slideInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards,
+                       pulse 2s ease-in-out 1.8s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: translateX(0) scale(1); }
+            50% { transform: translateX(0) scale(1.05); }
+        }
+        
+        /* ホバーエフェクト強化 */
+        .achievement-card {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .achievement-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+        
+        .result-item {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .result-item:hover {
+            transform: translateX(10px) scale(1.05);
+            background: linear-gradient(135deg, #f5f7fa 0%, #e3f2fd 100%);
+        }
+        
+        /* リンクのホバーアニメーション */
+        .achievement-link {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .achievement-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .achievement-link:hover::before {
+            left: 100%;
+        }
+        
+        .achievement-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        /* セクションタイトルのアンダーライン */
+        .achievement-description h4 {
+            position: relative;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .achievement-description h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--secondary-color), transparent);
+            transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .scroll-reveal.revealed h4::after {
+            width: 100%;
+        }
+        
+        /* ソリューションアイテムのアニメーション */
+        .solution-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .scroll-reveal.revealed .solution-item {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .solution-item:nth-child(1) { transition-delay: 0.1s; }
+        .solution-item:nth-child(2) { transition-delay: 0.2s; }
+        .solution-item:nth-child(3) { transition-delay: 0.3s; }
+        .solution-item:nth-child(4) { transition-delay: 0.4s; }
+        
+        /* バッジのアニメーション */
+        .result-badge {
+            display: inline-block;
+            animation: badgePop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 1.5s both;
+        }
+        
+        @keyframes badgePop {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        /* ボタンのホバーエフェクト */
+        .btn-primary {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn-primary:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.4);
+        }
+    </style>
 </head>
 <body>
     <!-- ヘッダー -->
     <header class="header">
-        <nav class="navbar">
-            <div class="container nav-container">
-                <a href="index.html" class="nav-brand">Yusei Maekawa</a>
-                <button class="nav-toggle" id="navToggle">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-                <ul class="nav-menu" id="navMenu">
-                    <li><a href="index.html">ホーム</a></li>
-                    <li><a href="index.html#about">自己紹介</a></li>
-                    <li><a href="index.html#skills">スキル</a></li>
-                    <li><a href="index.html#atcoder">AtCoder</a></li>
-                    <li><a href="contest-achievements.html" class="active">コンテスト実績</a></li>
-                    <li><a href="index.html#experience">経験</a></li>
-                    <li><a href="index.html#contact">お問い合わせ</a></li>
-                </ul>
-            </div>
-        </nav>
+        
     </header>
 
     <!-- コンテスト実績セクション -->
@@ -93,24 +285,24 @@
                 </div>
 
                 <div class="achievement-description">
-                    <h4><i class="fas fa-bullseye"></i> 参加の動機</h4>
-                    <p>初めての長期コンテストということもあり、上位50%を目標に参加しました。学校で学んだ知識をアウトプットしたいという思いと、思考力や最適化問題に挑戦したいという気持ちから参加を決意しました。</p>
+                    <h4 class="scroll-reveal"><i class="fas fa-bullseye"></i> 参加の動機</h4>
+                    <p class="scroll-reveal">初めての長期コンテストということもあり、上位50%を目標に参加しました。学校で学んだ知識をアウトプットしたいという思いと、思考力や最適化問題に挑戦したいという気持ちから参加を決意しました。</p>
                     
-                    <h4><i class="fas fa-lightbulb"></i> 取り組み内容</h4>
-                    <p>「高橋画伯の色彩チャレンジ」という調色パズル問題に挑戦。CMYの3次元色空間で目標色を精度高く調合する最適化問題でした。</p>
-                    <ul class="achievement-highlights">
+                    <h4 class="scroll-reveal"><i class="fas fa-lightbulb"></i> 取り組み内容</h4>
+                    <p class="scroll-reveal">「高橋画伯の色彩チャレンジ」という調色パズル問題に挑戦。CMYの3次元色空間で目標色を精度高く調合する最適化問題でした。</p>
+                    <ul class="achievement-highlights scroll-reveal">
                         <li><strong>解法の進化：</strong> 貪欲法からTSP順序最適化、ウェル管理の最適化まで、12種類以上の解法を試行錯誤</li>
                         <li><strong>スコア改善：</strong> 絶対得点を約135Mから18Mまで削減（-86%の誤差削減）</li>
                         <li><strong>実装技術：</strong> 全探索、色空間最適化、動的ウェル管理、使用回数ペナルティなど多様な手法を実装</li>
                         <li><strong>分析力：</strong> 各解法のスコア変化を詳細に記録し、効果的な改善策を継続的に導入</li>
                     </ul>
 
-                    <h4><i class="fas fa-star"></i> 感想</h4>
-                    <p>参加期間中は、スコアが上がる楽しさと改善ポイントの分析に無我夢中で取り組みました。目標を大きく上回る上位23.5%という結果を残せたことは、初参加としては非常に良い成果だったと感じています。次回も機会があればぜひ参加したいです。</p>
+                    <h4 class="scroll-reveal"><i class="fas fa-star"></i> 感想</h4>
+                    <p class="scroll-reveal">参加期間中は、スコアが上がる楽しさと改善ポイントの分析に無我夢中で取り組みました。目標を大きく上回る上位23.5%という結果を残せたことは、初参加としては非常に良い成果だったと感じています。次回も機会があればぜひ参加したいです。</p>
 
-                    <h4><i class="fas fa-code-branch"></i> 問題概要</h4>
-                    <p><strong>「高橋画伯の色彩チャレンジ」</strong> - 水彩画の調色パズル問題</p>
-                    <div class="problem-details">
+                    <h4 class="scroll-reveal"><i class="fas fa-code-branch"></i> 問題概要</h4>
+                    <p class="scroll-reveal"><strong>「高橋画伯の色彩チャレンジ」</strong> - 水彩画の調色パズル問題</p>
+                    <div class="problem-details scroll-reveal">
                         <h5>問題設定</h5>
                         <ul>
                             <li>色はCMY（シアン、マゼンタ、イエロー）の3次元ベクトルで表現（各成分 ∈ [0, 1]）</li>
@@ -131,8 +323,8 @@
                         <p>提出色と目標色の二乗誤差の合計を最小化する最適化問題</p>
                     </div>
 
-                    <h4><i class="fas fa-rocket"></i> 解法の進化</h4>
-                    <div class="solution-timeline">
+                    <h4 class="scroll-reveal"><i class="fas fa-rocket"></i> 解法の進化</h4>
+                    <div class="solution-timeline scroll-reveal">
                         <div class="solution-item">
                             <h5>5/30（1日目）- 解法1～4</h5>
                             <ul>
@@ -168,8 +360,8 @@
                         </div>
                     </div>
 
-                    <h4><i class="fas fa-tools"></i> 技術的な工夫</h4>
-                    <ul class="achievement-highlights">
+                    <h4 class="scroll-reveal"><i class="fas fa-tools"></i> 技術的な工夫</h4>
+                    <ul class="achievement-highlights scroll-reveal">
                         <li><strong>全探索の実装：</strong> 納品・追加注ぎ・混合・混合+追加注ぎの全組み合わせを評価</li>
                         <li><strong>色差最小化：</strong> ユークリッド距離による色差計算と最適操作選択</li>
                         <li><strong>容量管理：</strong> 各ウェルの残量を厳密に管理し、1g未満は使用不可</li>
@@ -178,8 +370,8 @@
                         <li><strong>動的ウェルサイズ：</strong> 問題に応じてウェルサイズを調整（4→3→2マス）</li>
                     </ul>
 
-                    <h4><i class="fas fa-graduation-cap"></i> 学んだこと</h4>
-                    <ul class="achievement-highlights">
+                    <h4 class="scroll-reveal"><i class="fas fa-graduation-cap"></i> 学んだこと</h4>
+                    <ul class="achievement-highlights scroll-reveal">
                         <li><strong>最適化の難しさ：</strong> 局所最適解に陥らないための探索戦略の重要性</li>
                         <li><strong>パラメータ調整：</strong> ウェルサイズやペナルティの微調整が大きな影響を与える</li>
                         <li><strong>分析の価値：</strong> スコア変化を記録し、効果を検証することの重要性</li>
@@ -205,5 +397,52 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        // スクロールアニメーション
+        document.addEventListener('DOMContentLoaded', () => {
+            const scrollElements = document.querySelectorAll('.scroll-reveal');
+            
+            const elementInView = (el, dividend = 1) => {
+                const elementTop = el.getBoundingClientRect().top;
+                return (
+                    elementTop <= 
+                    (window.innerHeight || document.documentElement.clientHeight) / dividend
+                );
+            };
+            
+            const displayScrollElement = (element) => {
+                element.classList.add('revealed');
+            };
+            
+            const handleScrollAnimation = () => {
+                scrollElements.forEach((el) => {
+                    if (elementInView(el, 1.25)) {
+                        displayScrollElement(el);
+                    }
+                });
+            };
+            
+            window.addEventListener('scroll', () => {
+                handleScrollAnimation();
+            });
+            
+            // 初回実行
+            setTimeout(() => {
+                handleScrollAnimation();
+            }, 100);
+            
+            // ナビゲーションバーのスクロール効果
+            window.addEventListener('scroll', () => {
+                const navbar = document.querySelector('.navbar');
+                if (navbar) {
+                    if (window.scrollY > 100) {
+                        navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+                    } else {
+                        navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>
