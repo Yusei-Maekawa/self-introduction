@@ -293,70 +293,51 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // スプラッシュスクリーンの初期化
+let splashScreenSkipped = false; // 重複スキップ防止フラグ
+let mainContentInitialized = false; // メインコンテンツ初期化フラグ
+
 function initializeSplashScreen() {
     const splashScreen = document.getElementById('splash-screen');
     const mainContent = document.getElementById('main-content');
 
-    // スプラッシュスクリーンの表示時間（3秒後に遷移開始）
+    // スプラッシュスクリーンの表示時間（3秒後にフェードアウト開始）
     setTimeout(() => {
-        // グローエフェクトを追加
-        const splashText = document.querySelector('.splash-text');
-        const splashDash = document.querySelector('.splash-dash');
-
-        if (splashText && splashDash) {
-            splashText.style.animation += ', pulseGlow 1s ease-in-out';
-            splashDash.style.animation += ', pulseGlow 1s ease-in-out 0.2s';
-        }
-
-        // 1秒後にフェードアウト開始
-        setTimeout(() => {
-            splashScreen.classList.add('fade-out');
-
-            // フェードアウト完了後にメインコンテンツ表示
-            setTimeout(() => {
-                console.log('💫 Splash screen fade-out complete, showing main content...');
-                mainContent.classList.add('show');
-                splashScreen.style.display = 'none';
-
-                // メインコンテンツが表示された後に重い処理を実行
-                console.log('🚀 About to call initializeMainContentFeatures...');
-                initializeMainContentFeatures();
-            }, 1000);
-        }, 1000);
-    }, 2500);
-
-    // クリックでスキップ機能
-    splashScreen.addEventListener('click', () => {
-        skipSplashScreen();
-    });
-
-    // Enterキーでスキップ機能
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !splashScreen.classList.contains('fade-out')) {
-            skipSplashScreen();
-        }
-    });
-
-    function skipSplashScreen() {
-        console.log('⏩ Skipping splash screen...');
+        if (splashScreenSkipped || mainContentInitialized) return; // 既にスキップ済みまたは初期化済みなら何もしない
+        
         splashScreen.classList.add('fade-out');
+
+        // フェードアウト完了後にメインコンテンツ表示（0.8秒後）
         setTimeout(() => {
-            console.log('💫 Skip: showing main content...');
+            if (mainContentInitialized) return;
+            console.log('💫 Splash screen fade-out complete, showing main content...');
             mainContent.classList.add('show');
             splashScreen.style.display = 'none';
-            console.log('🚀 Skip: calling initializeMainContentFeatures...');
+            splashScreenSkipped = true;
+
+            // メインコンテンツが表示された後に重い処理を実行
+            console.log('🚀 About to call initializeMainContentFeatures...');
             initializeMainContentFeatures();
-        }, 500);
-    }
+        }, 800);
+    }, 3000); // 3秒後にフェードアウト開始（ブレスエフェクト完了待ち）
 }
 
 // メインコンテンツの機能を初期化
+// メインコンテンツの機能初期化（重複防止）
 function initializeMainContentFeatures() {
+    if (mainContentInitialized) {
+        console.log('⚠️ Main content already initialized, skipping...');
+        return;
+    }
+    
+    mainContentInitialized = true;
     console.log('🎪 Initializing main content features...');
+    
     initializeThreeJS();
     initializeGSAP();
     initializeScrollAnimations();
     initializeAtCoderSection(); // AtCoderセクションの初期化
+    
+    // Typed.jsは少し遅延して初期化
     setTimeout(() => {
         initializeTypingEffect();
     }, 500);
@@ -899,10 +880,19 @@ function initializeGSAP() {
 }
 
 // タイピングエフェクト
+let typedInstance = null; // Typed.jsのインスタンスを保持
+
 function initializeTypingEffect() {
     const typedElement = document.getElementById('typed-text');
+    
+    // 既に初期化済みの場合は破棄して再初期化
+    if (typedInstance) {
+        typedInstance.destroy();
+        typedInstance = null;
+    }
+    
     if (typedElement && typeof Typed !== 'undefined') {
-        const typed = new Typed('#typed-text', {
+        typedInstance = new Typed('#typed-text', {
             strings: [
                 '気になることに、躊躇せず行動する！💪',
                 '好きこそものの上手なれ！✨',
@@ -1182,10 +1172,18 @@ links.forEach(link => {
 });
 
 // AtCoderセクションの初期化
+let atcoderInitialized = false; // 初期化済みフラグ
+
 function initializeAtCoderSection() {
+    if (atcoderInitialized) {
+        console.log('⚠️ AtCoder section already initialized');
+        return;
+    }
+    
     const atcoderSection = document.getElementById('atcoder');
     if (!atcoderSection) return;
     
+    atcoderInitialized = true;
     let hasAnimated = false; // アニメーション実行済みフラグ
     
     // セクションが表示されたときにアニメーションを開始

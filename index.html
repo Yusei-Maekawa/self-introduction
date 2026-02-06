@@ -169,11 +169,6 @@
  * - Font Awesome 6.0.0: アイコンライブラリ
  *
  * ============================================================================
- *
- * @author Yusei Maekawa (前川 雄世)
- * @version 1.0.0
- * @since 2025-11-01
- * @updated 2025-11-17
  */
 -->
 <html lang="ja">
@@ -184,6 +179,7 @@
     <title>前川 雄世 - ポートフォリオサイト</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="ui-enhancements.css">
+    <link rel="stylesheet" href="splash-enhancements.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap"
@@ -194,11 +190,299 @@
 <body>
     <!-- スプラッシュスクリーン -->
     <div id="splash-screen" class="splash-screen">
-        <div class="splash-content">
-            <h1 class="splash-title">
-                <span class="splash-text">私の住処へようこそ！</span>
-                <span class="splash-dash">ーーー</span>
-            </h1>
+        <!-- 背景のグラデーションアニメーション -->
+        <div class="splash-bg-animation"></div>
+        
+        <!-- ストーリーアイコン（円形パス上に配置） -->
+        <div class="story-icons-circular">
+            <svg class="story-path-svg" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <!-- 円形パス（矢印付き、中心300,300、半径200） -->
+                    <path id="storyCirclePath" d="M 300,100 A 200,200 0 1,1 300,500 A 200,200 0 1,1 300,100" />
+                    
+                    <!-- 矢印マーカー -->
+                    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <polygon points="0 0, 10 3, 0 6" fill="rgba(255,255,255,0.5)" />
+                    </marker>
+                    
+                    <!-- グラデーション -->
+                    <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                
+                <!-- 円形パス（点線の軌跡） -->
+                <use href="#storyCirclePath" fill="none" stroke="rgba(255,255,255,0.3)" 
+                     stroke-width="3" stroke-dasharray="10,10" marker-end="url(#arrowhead)" 
+                     class="story-circle-path" />
+                
+                <!-- キャッチコピー（中央） -->
+                <g class="catchphrase-group">
+                    <text x="300" y="280" text-anchor="middle" font-size="32" font-weight="bold" 
+                          fill="url(#iconGradient)" class="catchphrase-main">
+                        挑戦の軌跡
+                    </text>
+                    <text x="300" y="320" text-anchor="middle" font-size="18" 
+                          fill="rgba(255,255,255,0.8)" class="catchphrase-sub">
+                        From Past to Future
+                    </text>
+                </g>
+                
+                <!-- アイコン配置（円周上、中心300,300、半径200） -->
+                <!-- 水泳 (0度 - 真上) x=300, y=100 -->
+                <g class="story-icon-group" data-story="swim" transform="translate(300, 100)">
+                    <circle cx="0" cy="0" r="40" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.3)" stroke-width="2" class="icon-bg"/>
+                    <text x="0" y="0" text-anchor="middle" dominant-baseline="central" font-size="32" class="icon-text">🏊</text>
+                </g>
+                
+                <!-- バスケ (72度 - 右上) x=300+190*sin(72°), y=300-190*cos(72°) = 480, 241 -->
+                <g class="story-icon-group" data-story="basketball" transform="translate(480, 241)">
+                    <circle cx="0" cy="0" r="40" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.3)" stroke-width="2" class="icon-bg"/>
+                    <text x="0" y="0" text-anchor="middle" dominant-baseline="central" font-size="32" class="icon-text">🏀</text>
+                </g>
+                
+                <!-- 勉強 (144度 - 右下) x=300+190*sin(144°), y=300-190*cos(144°) = 412, 453 -->
+                <g class="story-icon-group" data-story="study" transform="translate(412, 453)">
+                    <circle cx="0" cy="0" r="40" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.3)" stroke-width="2" class="icon-bg"/>
+                    <text x="0" y="0" text-anchor="middle" dominant-baseline="central" font-size="32" class="icon-text">📚</text>
+                </g>
+                
+                <!-- 遊び (216度 - 左下) x=300+190*sin(216°), y=300-190*cos(216°) = 188, 453 -->
+                <g class="story-icon-group" data-story="game" transform="translate(188, 453)">
+                    <circle cx="0" cy="0" r="40" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.3)" stroke-width="2" class="icon-bg"/>
+                    <text x="0" y="0" text-anchor="middle" dominant-baseline="central" font-size="32" class="icon-text">🎮</text>
+                </g>
+                
+                <!-- プログラミング (288度 - 左上) x=300+190*sin(288°), y=300-190*cos(288°) = 120, 241 -->
+                <g class="story-icon-group" data-story="code" transform="translate(120, 241)">
+                    <circle cx="0" cy="0" r="40" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.3)" stroke-width="2" class="icon-bg"/>
+                    <text x="0" y="0" text-anchor="middle" dominant-baseline="central" font-size="32" class="icon-text">💻</text>
+                </g>
+            </svg>
+        </div>
+        
+        <!-- ドラゴンアニメーション（よりリアルに） -->
+        <div class="splash-dragon-container">
+            <svg class="splash-dragon" viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <!-- 青黒グラデーション -->
+                    <linearGradient id="dragonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#1e3a8a;stop-opacity:1" />
+                        <stop offset="50%" style="stop-color:#0f172a;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#0c4a6e;stop-opacity:1" />
+                    </linearGradient>
+                    <linearGradient id="scaleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#0c4a6e;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#1e3a8a;stop-opacity:1" />
+                    </linearGradient>
+                    <linearGradient id="wingGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:#1e40af;stop-opacity:0.9" />
+                        <stop offset="100%" style="stop-color:#1e293b;stop-opacity:0.6" />
+                    </linearGradient>
+                    <!-- ブレスのグラデーション（明るい炎） -->
+                    <radialGradient id="breathGradient">
+                        <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:1" />
+                        <stop offset="40%" style="stop-color:#93c5fd;stop-opacity:0.8" />
+                        <stop offset="70%" style="stop-color:#dbeafe;stop-opacity:0.5" />
+                        <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0" />
+                    </radialGradient>
+                    <filter id="dragonGlow">
+                        <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                        <feMerge>
+                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                    <filter id="breathGlow">
+                        <feGaussianBlur stdDeviation="12" result="coloredBlur"/>
+                        <feMerge>
+                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+                
+                <!-- 後ろの翼（巨大） -->
+                <g class="dragon-wing-back">
+                    <path d="M180,120 Q100,30 40,50 Q10,80 25,130 Q50,180 100,190 Q140,170 170,140 L180,120 Z" 
+                          fill="url(#wingGradient)" opacity="0.8" filter="url(#dragonGlow)"
+                          stroke="#1e40af" stroke-width="3"/>
+                    <!-- 翼の骨格 -->
+                    <path d="M180,120 L80,70 M180,120 L60,110 M180,120 L70,160"
+                          stroke="#0c4a6e" stroke-width="2" opacity="0.6"/>
+                </g>
+                
+                <!-- 尻尾 -->
+                <path class="dragon-tail" 
+                      d="M180,150 Q140,160 100,180 Q60,200 30,240"
+                      fill="none" stroke="url(#dragonGradient)" stroke-width="25" 
+                      stroke-linecap="round" filter="url(#dragonGlow)"/>
+                <path class="dragon-tail-spikes"
+                      d="M160,155 L150,135 M130,165 L120,145 M100,180 L90,160 M70,200 L60,180 M45,225 L35,205"
+                      stroke="#0c4a6e" stroke-width="3" stroke-linecap="round"/>
+                
+                <!-- ドラゴンの体（大きめ） -->
+                <ellipse class="dragon-body-main" cx="270" cy="140" rx="85" ry="50" 
+                         fill="url(#dragonGradient)" filter="url(#dragonGlow)"
+                         stroke="#0c4a6e" stroke-width="3"/>
+                
+                <!-- ウロコ模様 -->
+                <g class="dragon-scales" opacity="0.5">
+                    <ellipse cx="220" cy="130" rx="12" ry="10" fill="url(#scaleGradient)" stroke="#1e40af" stroke-width="1"/>
+                    <ellipse cx="245" cy="125" rx="12" ry="10" fill="url(#scaleGradient)" stroke="#1e40af" stroke-width="1"/>
+                    <ellipse cx="270" cy="122" rx="12" ry="10" fill="url(#scaleGradient)" stroke="#1e40af" stroke-width="1"/>
+                    <ellipse cx="295" cy="125" rx="12" ry="10" fill="url(#scaleGradient)" stroke="#1e40af" stroke-width="1"/>
+                    <ellipse cx="235" cy="145" rx="12" ry="10" fill="url(#scaleGradient)" stroke="#1e40af" stroke-width="1"/>
+                    <ellipse cx="260" cy="142" rx="12" ry="10" fill="url(#scaleGradient)" stroke="#1e40af" stroke-width="1"/>
+                    <ellipse cx="285" cy="145" rx="12" ry="10" fill="url(#scaleGradient)" stroke="#1e40af" stroke-width="1"/>
+                </g>
+                
+                <!-- 背びれ/トゲ（大きく鋭く） -->
+                <path class="dragon-spikes"
+                      d="M210,110 L200,80 L208,105 M240,105 L230,75 L238,100 M270,102 L260,72 L268,97 M300,105 L290,75 L298,100"
+                      fill="#0c4a6e" stroke="#1e40af" stroke-width="2"/>
+                
+                <!-- 首（太く） -->
+                <path class="dragon-neck" 
+                      d="M240,120 Q280,100 330,90" 
+                      fill="none" stroke="url(#dragonGradient)" stroke-width="45" 
+                      stroke-linecap="round" filter="url(#dragonGlow)"/>
+                
+                <!-- 頭部（大きく） -->
+                <ellipse class="dragon-head" cx="360" cy="85" rx="50" ry="38" 
+                         fill="url(#dragonGradient)" filter="url(#dragonGlow)"
+                         stroke="#0c4a6e" stroke-width="3"/>
+                
+                <!-- 口（開いた状態） -->
+                <path class="dragon-mouth"
+                      d="M410,85 Q430,90 445,85 L445,95 Q430,105 410,100 Z"
+                      fill="#0f172a" stroke="#0c4a6e" stroke-width="2"/>
+                
+                <!-- 牙（鋭い） -->
+                <g class="dragon-fangs">
+                    <path d="M415,90 L418,105 L420,90 Z" fill="#f0f9ff" stroke="#0c4a6e" stroke-width="1"/>
+                    <path d="M430,92 L433,107 L435,92 Z" fill="#f0f9ff" stroke="#0c4a6e" stroke-width="1"/>
+                    <path d="M415,95 L418,82 L420,95 Z" fill="#f0f9ff" stroke="#0c4a6e" stroke-width="1"/>
+                    <path d="M430,93 L433,80 L435,93 Z" fill="#f0f9ff" stroke="#0c4a6e" stroke-width="1"/>
+                </g>
+                
+                <!-- 鼻孔 -->
+                <ellipse cx="400" cy="78" rx="4" ry="3" fill="#0f172a"/>
+                <ellipse cx="415" cy="78" rx="4" ry="3" fill="#0f172a"/>
+                
+                <!-- 角（大きく威圧的） -->
+                <path class="dragon-horn-left" 
+                      d="M345,55 L330,15 L342,50 Z" 
+                      fill="url(#dragonGradient)" filter="url(#dragonGlow)"
+                      stroke="#1e40af" stroke-width="2"/>
+                <path class="dragon-horn-right" 
+                      d="M375,55 L390,15 L378,50 Z" 
+                      fill="url(#dragonGradient)" filter="url(#dragonGlow)"
+                      stroke="#1e40af" stroke-width="2"/>
+                
+                <!-- 目（鋭く光る） -->
+                <ellipse class="dragon-eye" cx="350" cy="75" rx="7" ry="10" fill="#60a5fa" opacity="1"/>
+                <ellipse class="dragon-pupil" cx="350" cy="75" rx="3" ry="5" fill="#0f172a"/>
+                <circle class="dragon-eye-glow" cx="350" cy="75" r="15" fill="#93c5fd" opacity="0.3"/>
+                
+                <!-- 前の翼（巨大、体の前） -->
+                <g class="dragon-wing-front">
+                    <path d="M280,130 Q360,40 420,60 Q450,90 435,140 Q410,190 360,200 Q320,180 290,150 L280,130 Z" 
+                          fill="url(#wingGradient)" opacity="0.85" filter="url(#dragonGlow)"
+                          stroke="#1e40af" stroke-width="3"/>
+                    <!-- 翼の骨格 -->
+                    <path d="M280,130 L380,80 M280,130 L400,120 M280,130 L390,170"
+                          stroke="#0c4a6e" stroke-width="2" opacity="0.6"/>
+                </g>
+                
+                <!-- ブレスエフェクト（口から噴出） -->
+                <g class="dragon-breath-effect">
+                    <!-- メインブレス（太い炎の流れ） -->
+                    <ellipse class="breath-blast-main" cx="500" cy="90" rx="70" ry="40" 
+                             fill="url(#breathGradient)" filter="url(#breathGlow)" opacity="0"/>
+                    
+                    <!-- 炎のコア（明るい中心部） -->
+                    <ellipse class="breath-core" cx="470" cy="90" rx="35" ry="25" 
+                             fill="#60a5fa" filter="url(#breathGlow)" opacity="0"/>
+                    
+                    <!-- 火花パーティクル -->
+                    <g class="breath-sparks">
+                        <circle class="spark spark-1" cx="480" cy="75" r="4" fill="#93c5fd" opacity="0"/>
+                        <circle class="spark spark-2" cx="490" cy="105" r="3" fill="#60a5fa" opacity="0"/>
+                        <circle class="spark spark-3" cx="510" cy="80" r="5" fill="#dbeafe" opacity="0"/>
+                        <circle class="spark spark-4" cx="520" cy="95" r="4" fill="#93c5fd" opacity="0"/>
+                        <circle class="spark spark-5" cx="500" cy="70" r="3" fill="#60a5fa" opacity="0"/>
+                        <circle class="spark spark-6" cx="515" cy="110" r="4" fill="#dbeafe" opacity="0"/>
+                    </g>
+                    
+                    <!-- 炎の波紋 -->
+                    <g class="breath-waves">
+                        <ellipse class="wave wave-1" cx="485" cy="90" rx="50" ry="32" 
+                                 fill="none" stroke="#60a5fa" stroke-width="2" opacity="0"/>
+                        <ellipse class="wave wave-2" cx="505" cy="90" rx="60" ry="38" 
+                                 fill="none" stroke="#93c5fd" stroke-width="1.5" opacity="0"/>
+                        <ellipse class="wave wave-3" cx="520" cy="90" rx="65" ry="42" 
+                                 fill="none" stroke="#dbeafe" stroke-width="1" opacity="0"/>
+                    </g>
+                </g>
+            </svg>
+        </div>
+    </div>
+                <circle class="dragon-eye-pupil" cx="280" cy="70" r="2" fill="#0c4a6e"/>
+                
+                <!-- 鼻孔 -->
+                <ellipse cx="308" cy="75" rx="3" ry="4" fill="#0c4a6e" opacity="0.7"/>
+                <ellipse cx="308" cy="82" rx="3" ry="4" fill="#0c4a6e" opacity="0.7"/>
+                
+                <!-- ブレス（青白い炎） -->
+                <g class="dragon-breath-effect">
+                    <!-- メインブレス -->
+                    <path class="dragon-breath-main" 
+                          d="M315,78 Q360,75 400,70 Q440,65 480,60" 
+                          fill="none" stroke="url(#breathGradient)" stroke-width="20" 
+                          stroke-linecap="round" filter="url(#breathGlow)" opacity="0"/>
+                    <!-- 上のブレス -->
+                    <path class="dragon-breath-top" 
+                          d="M315,75 Q360,70 400,60 Q430,55 460,45" 
+                          fill="none" stroke="url(#breathGradient)" stroke-width="12" 
+                          stroke-linecap="round" filter="url(#breathGlow)" opacity="0"/>
+                    <!-- 下のブレス -->
+                    <path class="dragon-breath-bottom" 
+                          d="M315,81 Q360,80 400,78 Q430,76 460,75" 
+                          fill="none" stroke="url(#breathGradient)" stroke-width="12" 
+                          stroke-linecap="round" filter="url(#breathGlow)" opacity="0"/>
+                    <!-- 火花 -->
+                    <circle class="breath-spark spark-1" cx="350" cy="75" r="4" fill="#93c5fd" opacity="0"/>
+                    <circle class="breath-spark spark-2" cx="380" cy="68" r="5" fill="#60a5fa" opacity="0"/>
+                    <circle class="breath-spark spark-3" cx="410" cy="72" r="3" fill="#dbeafe" opacity="0"/>
+                    <circle class="breath-spark spark-4" cx="440" cy="65" r="6" fill="#93c5fd" opacity="0"/>
+                </g>
+                
+                <!-- 前の翼（大きく力強く） -->
+                <path class="dragon-wing-front" 
+                      d="M220,110 Q270,30 320,50 Q350,70 345,110 Q340,140 300,155 Q260,145 230,130 L220,110 Z" 
+                      fill="url(#wingGradient)" opacity="0.85" filter="url(#dragonGlow)"
+                      stroke="#1e40af" stroke-width="2"/>
+                <!-- 翼の骨格 -->
+                <path class="wing-bones"
+                      d="M230,120 L280,45 M250,125 L300,60 M270,130 L320,80"
+                      stroke="#0c4a6e" stroke-width="2" opacity="0.6"/>
+                
+                <!-- 尾（長く力強く） -->
+                <path class="dragon-tail" 
+                      d="M190,125 Q140,135 90,125 Q50,115 20,105" 
+                      fill="none" stroke="url(#dragonGradient)" stroke-width="25" 
+                      stroke-linecap="round" filter="url(#dragonGlow)"/>
+                <!-- 尾のトゲ -->
+                <path class="tail-spikes"
+                      d="M150,125 L145,115 L150,120 M110,125 L105,115 L110,120 M70,120 L65,110 L70,115"
+                      fill="url(#dragonGradient)" stroke="#0c4a6e" stroke-width="2"/>
+                <path class="dragon-tail-tip" 
+                      d="M20,105 L5,90 L15,100 L5,110 Z" 
+                      fill="url(#dragonGradient)" filter="url(#dragonGlow)"
+                      stroke="#1e40af" stroke-width="2"/>
+            </svg>
         </div>
     </div>
 
