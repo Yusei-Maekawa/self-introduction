@@ -1,27 +1,323 @@
 /**
  * splash-enhancements.css
- * 
+ *
  * ============================================================================
  * 📖 ファイル概要 / File Overview
  * ============================================================================
- * 
+ *
  * 【日本語】
- * スプラッシュスクリーン強化スタイル
- * - ドラゴンモチーフのロゴアニメーション
- * - ストーリー性のあるテキスト演出
- * - 3秒以内の高速表示（UX重視）
- * 
- * コンセプト: 「これまでいろんなことを考えて歩んできたストーリー性」
- * Maedora = ドラゴン（Dragon）をモチーフにしたあだ名
- * 
+ * スプラッシュスクリーン強化スタイル v4.0
+ * - ページロード時: scale(1.06) + blur(10px) → .is-ready で等倍解除（上品な入り）
+ * - .catchphrase-group: catchphraseZoomIn（ズームイン＋ブラー解除）
+ * - .fade-out: scale(0.98) + blur(6px) + opacity:0（スタイリッシュな退場）
+ * - prefers-reduced-motion 対応
+ *
  * @author Yusei Maekawa (前川 雄世)
- * @version 2.0.0
- * @created 2026-02-06
+ * @version 4.0.0
+ * @updated 2026-03-01
  * ============================================================================
  */
 
 /* ============================================================================
- * 🐉 ドラゴンロゴアニメーション / Dragon Logo Animation
+ * 🎬 スプラッシュ画面: 初期状態（ズーム＋ブラーからスタート）
+ * transition はここで一元定義（is-ready・fade-out 両方で共通使用）
+ * ============================================================================ */
+
+.splash-screen {
+    transition:
+        opacity    0.7s  ease,
+        visibility 0.7s  ease;
+}
+
+/* .is-ready はブラー・ズーム廃止につき削除 */
+
+/* ============================================================================
+ * 🎬 .fade-out: 縮小 ＋ ぼかし ＋ フェード（スタイリッシュな退場）
+ * styles.css の fade-out ルール（opacity のみ）をオーバーライド
+ * ============================================================================ */
+
+.splash-screen.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* ============================================================================
+ * ✨ キャッチコピー: catchphraseZoomIn
+ * styles.css の catchphraseFadeIn（delay 1.5s）をオーバーライド
+ * ============================================================================ */
+
+.catchphrase-group {
+    opacity: 0;
+    animation: catchphraseZoomIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.9s forwards;
+}
+
+@keyframes catchphraseZoomIn {
+    0%   { opacity: 0; transform: scale(0.92); }
+    70%  { opacity: 1; transform: scale(1.06); }
+    100% { opacity: 1; transform: scale(1);    }
+}
+
+/* ============================================================================
+ * 📱 レスポンシブ対応 / Responsive Design
+ * ============================================================================ */
+
+@media (max-width: 768px) {
+    .story-path-svg {
+        width: 400px;
+        height: 400px;
+    }
+}
+
+@media (max-width: 480px) {
+    .story-path-svg {
+        width: 300px;
+        height: 300px;
+    }
+}
+
+/* ============================================================================
+ * ♿ アクセシビリティ / Accessibility (prefers-reduced-motion)
+ * ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    .splash-screen {
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    /* キャッチコピー・アイコン・円パスを瞬時完了 */
+    .catchphrase-group,
+    .story-circle-path,
+    .story-icon-group,
+    .story-icon-group > * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        animation-delay: 0ms !important;
+    }
+}
+
+
+
+
+.dragon-wing-back,
+.dragon-wing-front,
+.dragon-head-neck,
+.dragon-jaw,
+.dragon-head,
+.dragon-neck,
+.dragon-horn-left,
+.dragon-horn-right,
+.dragon-body-main,
+.dragon-tail,
+.dragon-eye,
+.dragon-eye-glow,
+.eye-flare,
+.dragon-brow,
+.breath-beam {
+    transform-box: fill-box;
+}
+
+/* ドラゴン全体の輪郭コントラスト強化 */
+.splash-dragon {
+    filter: drop-shadow(0 0 4px rgba(147, 197, 253, 0.95))
+            drop-shadow(0 0 20px rgba(59, 130, 246, 0.85))
+            drop-shadow(0 0 65px rgba(30, 58, 138, 0.98));
+    opacity: 1;
+}
+
+/* ============================================================================
+ * 🐉 翻の總元を基準に羽ばたき
+ * ============================================================================ */
+
+/* 後ろ翼：根元＝右端中央 (100% 50%) */
+.dragon-wing-back {
+    transform-origin: 100% 50%;
+    animation: wingFlapBack 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes wingFlapBack {
+    0%   { transform: rotate(0deg)   scaleY(1);    }
+    100% { transform: rotate(-14deg) scaleY(0.94); }
+}
+
+/* 前翼：根元＝左端中央 (0% 50%) */
+.dragon-wing-front {
+    transform-origin: 0% 50%;
+    animation: wingFlapFront 0.8s ease-in-out 0.2s infinite alternate;
+}
+
+@keyframes wingFlapFront {
+    0%   { transform: rotate(0deg)  scaleY(1);    }
+    100% { transform: rotate(11deg) scaleY(1.06); }
+}
+
+/* ============================================================================
+ * 🐉 頭＋首グループ：首の根元 (0% 100%) を軸にシーケンスアニメ
+ * タイムライン（4s = dragonFlyThroughTime と同尺）：
+ *   0–45%  通常ボブ
+ *   45–50% ブレス前に引く（息を吸う）
+ *   50–70% ブレス発射（頭前へ）
+ *   70–100% 戻る
+ * ============================================================================ */
+
+.dragon-head-neck {
+    transform-origin: 0% 100%;
+    animation: headNeckSequence 4s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+
+@keyframes headNeckSequence {
+    0%    { transform: rotate(0deg)  translateY(0);    }
+    12%   { transform: rotate(-2deg) translateY(-3px); }
+    25%   { transform: rotate(1.5deg)translateY(2px);  }
+    37%   { transform: rotate(-1.5deg)translateY(-2px);}
+    45%   { transform: rotate(-6deg) translateY(-8px); } /* 息を吸う */
+    55%   { transform: rotate(5deg)  translateY(5px);  } /* ブレス */
+    70%   { transform: rotate(2deg)  translateY(2px);  }
+    85%   { transform: rotate(0deg)  translateY(0);    }
+    100%  { transform: rotate(-2deg) translateY(-2px); } /* 飛び去る */
+}
+
+/* 個別アニメーションは無効化（グループで制御） */
+.dragon-head-neck .dragon-head,
+.dragon-head-neck .dragon-neck {
+    animation: none;
+}
+
+/* ============================================================================
+ * 🐉 下あご：上端左 (0% 0%) ヒンジで回転開閉
+ * ============================================================================ */
+
+.dragon-jaw {
+    transform-origin: 0% 0%;
+    animation: jawOpen 1.2s ease-in-out 1.8s forwards;
+}
+
+@keyframes jawOpen {
+    0%   { transform: rotate(0deg);  }
+    20%  { transform: rotate(6deg);  } /* 少し開く（ブレス準備） */
+    45%  { transform: rotate(24deg); } /* 全開（ブレス最大） */
+    80%  { transform: rotate(18deg); } /* 少し閉じる */
+    100% { transform: rotate(10deg); } /* 半開き（飛び去る） */
+}
+
+/* ============================================================================
+ * 🐉 角：根元 (50% 100%) から成長
+ * ============================================================================ */
+
+.dragon-horn-left,
+.dragon-horn-right {
+    transform-origin: 50% 100%;
+    filter: drop-shadow(0 0 6px rgba(147, 197, 253, 0.9));
+    animation: hornGrow 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both,
+               hornShine 3s ease-in-out 1s infinite;
+}
+
+@keyframes hornGrow {
+    from { opacity: 0; transform: scaleY(0); }
+    to   { opacity: 1; transform: scaleY(1); }
+}
+
+@keyframes hornShine {
+    0%, 100% { opacity: 1;   }
+    50%       { opacity: 0.7; }
+}
+
+/* ============================================================================
+ * 🐉 目・アイフレア
+ * ============================================================================ */
+
+.dragon-eye {
+    transform-origin: 50% 50%;
+    filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.9));
+    animation: eyeBlink2 4s ease-in-out infinite;
+}
+
+@keyframes eyeBlink2 {
+    0%, 90%, 100% { transform: scaleY(1);   opacity: 0.95; }
+    95%            { transform: scaleY(0.1); opacity: 0.2;  }
+}
+
+.dragon-eye-glow {
+    transform-origin: 50% 50%;
+    animation: eyeGlow2 2s ease-in-out infinite;
+}
+
+@keyframes eyeGlow2 {
+    0%, 100% { opacity: 0.3; transform: scale(1);   }
+    50%       { opacity: 0.7; transform: scale(1.25);}
+}
+
+/* アイフレア：ブレス直前に目が白く輝く */
+.eye-flare {
+    transform-origin: 50% 50%;
+    animation: eyeFlare 0.35s ease-in-out 1.82s forwards;
+}
+
+@keyframes eyeFlare {
+    0%   { opacity: 0;    transform: scale(0.4); }
+    45%  { opacity: 0.95; transform: scale(1.6); }
+    100% { opacity: 0;    transform: scale(2.8); }
+}
+
+/* ============================================================================
+ * 🐉 ブレスビーム：口から画面端へ伸びる水平光線
+ * ============================================================================ */
+
+.breath-beam {
+    transform-origin: 0% 50%;  /* 左端（口元）を起点に右へ伸びる */
+    animation: breathBeam 0.9s ease-out 2.0s forwards;
+}
+
+@keyframes breathBeam {
+    0%   { opacity: 0;    transform: scaleX(0.03); }
+    18%  { opacity: 0.95; transform: scaleX(0.55); }
+    55%  { opacity: 0.85; transform: scaleX(1);    }
+    100% { opacity: 0;    transform: scaleX(1.5);  }
+}
+
+/* breathBlast 強化オーバーライド（styles.css より後読みので有効） */
+@keyframes breathBlast {
+    0%   { opacity: 0;    transform: scale(0.2)  translateX(-40px); }
+    25%  { opacity: 1;    transform: scale(1.25) translateX(5px);   }
+    62%  { opacity: 0.8;  transform: scale(1.75) translateX(35px);  }
+    100% { opacity: 0;    transform: scale(2.5)  translateX(85px);  }
+}
+
+/* breathCore 強化オーバーライド */
+@keyframes breathCore {
+    0%   { opacity: 0;    transform: scale(0.15) translateX(-25px); }
+    25%  { opacity: 1;    transform: scale(1.1)  translateX(5px);   }
+    62%  { opacity: 0.9;  transform: scale(1.45) translateX(22px);  }
+    100% { opacity: 0;    transform: scale(1.9)  translateX(58px);  }
+}
+
+/* ============================================================================
+ * 🐉 体の呼吸・尻尾
+ * ============================================================================ */
+
+.dragon-body-main {
+    transform-origin: 50% 50%;
+    animation: bodyBreathe2 2s ease-in-out infinite;
+}
+
+@keyframes bodyBreathe2 {
+    0%, 100% { transform: scale(1);    }
+    50%       { transform: scale(1.03); }
+}
+
+.dragon-tail {
+    transform-origin: 50% 0%;
+    animation: tailSway2 2.5s ease-in-out infinite;
+}
+
+@keyframes tailSway2 {
+    0%, 100% { transform: rotate(0deg);  }
+    25%       { transform: rotate(-3deg); }
+    75%       { transform: rotate(3deg);  }
+}
+
+/* ============================================================================
+ * 🐉 ドラゴンロゴ（splash-logo 用・旧API互換）
  * ============================================================================ */
 
 .splash-logo {
@@ -35,59 +331,7 @@
     filter: drop-shadow(0 0 20px rgba(52, 152, 219, 0.5));
 }
 
-/* ドラゴンの頭部 - 拡大して登場 */
-.dragon-head {
-    animation: dragonAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
-    transform-origin: center;
-}
-
-@keyframes dragonAppear {
-    from {
-        opacity: 0;
-        transform: scale(0.3) rotate(-10deg);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1) rotate(0deg);
-    }
-}
-
-/* ドラゴンの目 - まばたきエフェクト */
-.dragon-eye-left,
-.dragon-eye-right {
-    animation: dragonBlink 3s ease-in-out 1s infinite;
-}
-
-@keyframes dragonBlink {
-    0%, 96%, 100% {
-        opacity: 1;
-        transform: scaleY(1);
-    }
-    98% {
-        opacity: 0.3;
-        transform: scaleY(0.1);
-    }
-}
-
-/* ドラゴンの角 - 成長エフェクト */
-.dragon-horn-left,
-.dragon-horn-right {
-    animation: hornGrow 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s both;
-    transform-origin: bottom center;
-}
-
-@keyframes hornGrow {
-    from {
-        opacity: 0;
-        transform: scaleY(0);
-    }
-    to {
-        opacity: 1;
-        transform: scaleY(1);
-    }
-}
-
-/* ドラゴンの炎 - 揺らめきエフェクト */
+/* ドラゴンの炎 - 揺らめきエフェクト（旧 splash-logo 内の .dragon-flame 用） */
 .dragon-flame {
     animation: flameFlicker 1.5s ease-in-out 0.8s infinite;
     transform-origin: top center;
@@ -256,58 +500,14 @@
 }
 
 /* ============================================================================
- * 🎭 フェードアウトアニメーション / Fade Out Animation
+ * 🎭 フェードアウト
+ * styles.css の transition: opacity 0.8s ease を使う。
+ * ここでは animation を上書きしないことで transitionend が確実に発火する。
+ * JS 側で .fade-out を付与 → opacity:0 になった後に transitionend → splash.remove()
  * ============================================================================ */
 
-/* 統合されたフェードアウト（2.5秒後に開始、0.8秒でフェード） */
-.splash-screen.fade-out {
-    animation: splashFadeOut 0.8s ease-out 2.5s forwards;
-}
-
-@keyframes splashFadeOut {
-    from {
-        opacity: 1;
-        transform: scale(1);
-    }
-    to {
-        opacity: 0;
-        transform: scale(1.1);
-    }
-}
-
-/* ロゴの消失時の特殊エフェクト */
-.splash-screen.fade-out .dragon-logo {
-    animation: logoDissolve 0.8s ease-out forwards;
-}
-
-@keyframes logoDissolve {
-    from {
-        opacity: 1;
-        filter: drop-shadow(0 0 20px rgba(52, 152, 219, 0.5));
-        transform: scale(1);
-    }
-    to {
-        opacity: 0;
-        filter: drop-shadow(0 0 50px rgba(231, 76, 60, 0.8));
-        transform: scale(1.2) translateY(-20px);
-    }
-}
-
-/* テキストの消失 */
-.splash-screen.fade-out .splash-story {
-    animation: storyFadeOut 0.8s ease-out forwards;
-}
-
-@keyframes storyFadeOut {
-    from {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    to {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-}
+/* .splash-screen.fade-out は styles.css 側の transition ルールに任せる */
+/* （splash-enhancements.css で animation を付けると transition が無効になるため削除） */
 
 /* ============================================================================
  * 📱 レスポンシブ対応 / Responsive Design
@@ -318,19 +518,29 @@
         width: 150px;
         height: 150px;
     }
-    
+
     .splash-name {
         font-size: 2.5rem;
     }
-    
+
     .splash-subtitle {
         font-size: 1rem;
         letter-spacing: 0.2em;
     }
-    
+
     .splash-journey {
         font-size: 0.95rem;
         gap: 0.8rem;
+    }
+
+    .story-path-svg {
+        width: 360px;
+        height: 360px;
+    }
+
+    .splash-dragon {
+        width: 400px;
+        height: 200px;
     }
 }
 
@@ -339,45 +549,83 @@
         width: 120px;
         height: 120px;
     }
-    
+
     .splash-name {
         font-size: 2rem;
     }
-    
+
     .splash-subtitle {
         font-size: 0.9rem;
     }
-    
+
     .splash-journey {
         font-size: 0.85rem;
         gap: 0.6rem;
     }
-    
+
     .journey-text {
         padding-left: 1rem;
+    }
+
+    .story-path-svg {
+        width: 280px;
+        height: 280px;
+    }
+
+    .splash-dragon {
+        width: 320px;
+        height: 160px;
     }
 }
 
 /* ============================================================================
- * ♿ アクセシビリティ / Accessibility
+ * ♿ アクセシビリティ / Accessibility (prefers-reduced-motion)
+ * reduced-motion 時はすべてのドラゴン・ストーリーアニメを瞬時完了させる
  * ============================================================================ */
 
 @media (prefers-reduced-motion: reduce) {
-    .splash-logo,
-    .splash-story,
-    .dragon-head,
+    /* ドラゴン関連 */
+    .dragon-head-neck,
+    .dragon-jaw,
+    .dragon-wing-back,
+    .dragon-wing-front,
+    .dragon-body-main,
+    .dragon-tail,
+    .dragon-eye,
+    .dragon-eye-glow,
+    .eye-flare,
     .dragon-horn-left,
     .dragon-horn-right,
-    .dragon-flame,
-    .splash-name,
-    .splash-subtitle,
-    .journey-text {
+    .splash-dragon-container,
+    .breath-blast-main,
+    .breath-core,
+    .breath-beam,
+    .spark,
+    .wave {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
+        animation-delay: 0ms !important;
     }
-    
-    .dragon-eye-left,
-    .dragon-eye-right {
-        animation: none !important;
+
+    /* ストーリーアイコン */
+    .story-circle-path,
+    .catchphrase-group,
+    .story-icon-group,
+    .story-icon-group > * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        animation-delay: 0ms !important;
+        opacity: 1;
+    }
+
+    /* テキスト */
+    .splash-logo,
+    .splash-story,
+    .splash-name,
+    .splash-subtitle,
+    .journey-text,
+    .dragon-flame {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
     }
 }
